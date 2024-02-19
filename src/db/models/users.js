@@ -95,26 +95,6 @@ const Users = sequelize.define(
   },
 );
 
-Users.belongsTo(UserRoles, {
-  foreignKey: "idRole",
-});
-
-UserRoles.hasMany(Users, {
-  foreignKey: "idRole",
-  onDelete: "RESTRICT",
-  onUpdate: "CASCADE",
-});
-
-Users.belongsTo(UserStates, {
-  foreignKey: "idCurrentState",
-});
-
-UserStates.hasMany(Users, {
-  foreignKey: "idCurrentState",
-  onDelete: "RESTRICT",
-  onUpdate: "CASCADE",
-});
-
 Users.belongsTo(Genders, {
   foreignKey: "idGender",
 });
@@ -144,38 +124,5 @@ Users.isOfLegalAge = bornDateString => {
 
   return years >= 18;
 };
-
-// Hooks
-Users.beforeValidate(async (user, options) => {
-  if (!user.idRole) {
-    const normalRole = await UserRoles.findOne({
-      where: { role: "normal" },
-    });
-    user.idRole = normalRole.id;
-  }
-
-  if (!user.idCurrentState) {
-    const availableState = await UserStates.findOne({
-      where: { state: "available" },
-    });
-    user.idCurrentState = availableState.id;
-  }
-});
-
-Users.beforeCreate(async (user, options) => {
-  if (!user.idRole) {
-    const normalRole = await UserRoles.findOne({
-      where: { role: "normal" },
-    });
-    user.idRole = normalRole.id;
-  }
-
-  if (!user.idCurrentState) {
-    const availableState = await UserStates.findOne({
-      where: { state: "available" },
-    });
-    user.idCurrentState = availableState.id;
-  }
-});
 
 module.exports = { Users };
