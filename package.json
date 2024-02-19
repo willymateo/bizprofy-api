@@ -1,5 +1,21 @@
 {
+  "name": "bizprofy-api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "next start",
+    "start:dev": "next dev",
+    "build": "next build",
+    "lint": "next lint",
+    "prepare": "husky"
+  },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "sequelize": "^6.37.1"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "3.2.5"
   }
 }
