@@ -3,19 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "next start",
-    "start:dev": "next dev",
+    "start": "node src/index.js",
+    "start:dev": "NODE_ENV=development nodemon src/index.js",
     "build": "next build",
     "lint": "next lint",
     "prepare": "husky"
   },
   "dependencies": {
+    "dotenv": "^16.4.4",
     "express": "^4.18.2",
     "sequelize": "^6.37.1"
   },
   "devDependencies": {
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
+    "nodemon": "^3.0.3",
     "prettier": "3.2.5"
   }
 }
