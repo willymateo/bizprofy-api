@@ -1,16 +1,16 @@
 "use strict";
-import { intervalToDuration, isValid, parseISO } from "date-fns";
-import { sequelize } from "../connection";
-import { DataTypes } from "sequelize";
-import { Genders } from "./genders";
-import { v4 as uuidv4 } from "uuid";
-import bcrypt from "bcrypt";
-import {
-  saltRounds,
-  USERNAME_REGEX,
+const { intervalToDuration, isValid, parseISO } = require("date-fns");
+const { sequelize } = require("../connection");
+const { DataTypes } = require("sequelize");
+const { Genders } = require("./genders");
+const {
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
-} from "../../config/app.config";
+  USERNAME_REGEX,
+  saltRounds,
+} = require("../../config/app.config");
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
 
 const Users = sequelize.define(
   "Users",
@@ -178,4 +178,4 @@ Users.beforeCreate(async (user, options) => {
   }
 });
 
-export { Users };
+module.exports = { Users };

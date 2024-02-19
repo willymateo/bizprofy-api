@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 const dbConfig = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
@@ -14,4 +12,4 @@ const dbConfig = {
   logging: false,
 };
 
-export default dbConfig;
+module.exports = dbConfig;

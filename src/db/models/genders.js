@@ -1,6 +1,6 @@
 "use strict";
-import { sequelize } from "../connection";
-import { DataTypes } from "sequelize";
+const { sequelize } = require("../connection");
+const { DataTypes } = require("sequelize");
 
 const Genders = sequelize.define(
   "Genders",
@@ -35,4 +35,4 @@ const Genders = sequelize.define(
   },
 );
 
-export { Genders };
+module.exports = { Genders };

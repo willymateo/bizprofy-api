@@ -1,7 +1,7 @@
 "use strict";
-import dbConfig from "../config/db.config";
-import { Sequelize } from "sequelize";
+const dbConfig = require("../config/db.config");
+const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
 
-export { sequelize };
+module.exports = { sequelize };

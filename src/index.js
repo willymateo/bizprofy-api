@@ -1,11 +1,14 @@
-import { morganFormat, nodeEnvironment, port } from "./config/app.config";
+require("dotenv/config");
 // import favicon from "serve-favicon";
-import pkg from "../package.json";
-import express from "express";
-import logger from "morgan";
-import helmet from "helmet";
-import cors from "cors";
+const express = require("express");
+const logger = require("morgan");
+const helmet = require("helmet");
+const cors = require("cors");
 // import path from "path";
+
+const { MORGAN_FORMAT, NODE_ENV, PORT } = require("./config/app.config");
+const authRouter = require("./routes/auth");
+const pkg = require("../package.json");
 
 const app = express();
 // app.use(favicon(path.join(__dirname, "../public", "favicon.ico")));
@@ -16,13 +19,13 @@ app.set("case sensitive routing", true);
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
-app.use(logger(morganFormat));
+app.use(logger(MORGAN_FORMAT));
 app.use(express.urlencoded({ extended: false }));
 
 // Routes.
 app.get("/", (req, res) => {
   res.send({
-    environment: nodeEnvironment,
+    environment: NODE_ENV,
     name: app.get("pkg").name,
     author: app.get("pkg").author,
     version: app.get("pkg").version,
@@ -31,15 +34,15 @@ app.get("/", (req, res) => {
 });
 app.use("/api/auth", authRouter);
 
-const server = app.listen(port, async () => {
+const server = app.listen(PORT, async () => {
   try {
     const { address } = server.address();
 
-    console.log(`Environment: ${nodeEnvironment}`);
-    console.log(`Server is running on ${address}${port}`);
+    console.log(`Environment: ${NODE_ENV}`);
+    console.log(`Server is running on ${address}${PORT}`);
   } catch (error) {
     console.log(error);
   }
 });
 
-export { server };
+module.exports = { server };

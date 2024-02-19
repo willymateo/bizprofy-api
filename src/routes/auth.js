@@ -1,10 +1,11 @@
-import { validateLoginDTO } from "../middlewares/validateLoginDTO";
-import { login } from "../controllers/auth.controller";
-import { createToken } from "../middlewares/authJwt";
-import { Router } from "express";
+const { Router } = require("express");
+
+const { validateLoginSchema } = require("../middlewares/validateAJVSchema/auth");
+const { createToken } = require("../middlewares/authJwt");
+const { login } = require("../controllers/auth");
 
 const router = Router();
 
-router.post("/login", validateLoginDTO, login, createToken);
+router.post("/login", validateLoginSchema, login, createToken);
 
-export default router;
+module.exports = router;

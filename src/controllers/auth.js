@@ -1,4 +1,4 @@
-import { Users } from "../db/models/users";
+const { Users } = require("../db/models/users");
 
 const login = async (req, res, next) => {
   try {
@@ -31,4 +31,4 @@ const login = async (req, res, next) => {
   }
 };
 
-export { login };
+module.exports = { login };
