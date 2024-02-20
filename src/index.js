@@ -1,17 +1,19 @@
 require("dotenv/config");
-// import favicon from "serve-favicon";
+const favicon = require("serve-favicon");
 const express = require("express");
 const logger = require("morgan");
 const helmet = require("helmet");
 const cors = require("cors");
-// import path from "path";
+const path = require("path");
 
 const { MORGAN_FORMAT, NODE_ENV, PORT } = require("./config/app.config");
+const { notFound, errorHandler } = require("./middlewares/error");
+const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
 const pkg = require("../package.json");
 
 const app = express();
-// app.use(favicon(path.join(__dirname, "../public", "favicon.ico")));
+app.use(favicon(path.join(__dirname, "../public/images", "favicon.png")));
 app.set("pkg", pkg);
 app.set("case sensitive routing", true);
 
@@ -32,7 +34,10 @@ app.get("/", (req, res) => {
     description: app.get("pkg").description,
   });
 });
-app.use("/api/auth", authRouter);
+app.use("/users", usersRouter);
+app.use("/auth", authRouter);
+app.use(notFound);
+app.use(errorHandler);
 
 const server = app.listen(PORT, async () => {
   try {

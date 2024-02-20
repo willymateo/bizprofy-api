@@ -1,12 +1,11 @@
 "use strict";
-const { intervalToDuration, isValid, parseISO } = require("date-fns");
 const { sequelize } = require("../connection");
 const { DataTypes } = require("sequelize");
 const {
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
+  BCRYPT_SALT_ROUNDS,
   USERNAME_REGEX,
-  saltRounds,
 } = require("../../config/app.config");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
@@ -74,11 +73,6 @@ const Users = sequelize.define(
       },
       comment: "The url to profile photo.",
     },
-    bornDate: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-      comment: "Born date to identify if the user is of legal age",
-    },
   },
   {
     paranoid: true,
@@ -93,20 +87,6 @@ Users.prototype.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.passwordHash);
 };
 
-Users.encryptPassword = password => bcrypt.hash(password, saltRounds);
-
-Users.isOfLegalAge = bornDateString => {
-  const bornDate = parseISO(bornDateString);
-  if (!isValid(bornDate)) {
-    return false;
-  }
-
-  const { years } = intervalToDuration({
-    start: bornDate,
-    end: new Date(),
-  });
-
-  return years >= 18;
-};
+Users.encryptPassword = password => bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
 module.exports = { Users };

@@ -44,11 +44,6 @@ module.exports = {
           allowNull: true,
           comment: "The url to profile photo",
         },
-        born_date: {
-          type: Sequelize.DATEONLY,
-          allowNull: false,
-          comment: "Born date to identify if the user is of legal age",
-        },
         createdAt: {
           field: "created_at",
           type: Sequelize.DATE,
