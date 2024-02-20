@@ -2,7 +2,6 @@
 const { intervalToDuration, isValid, parseISO } = require("date-fns");
 const { sequelize } = require("../connection");
 const { DataTypes } = require("sequelize");
-const { Genders } = require("./genders");
 const {
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
@@ -25,11 +24,6 @@ const Users = sequelize.define(
         isUUID: 4,
       },
       comment: "PK, unique identifier.",
-    },
-    idGender: {
-      type: DataTypes.SMALLINT,
-      allowNull: false,
-      comment: "FK to gender.",
     },
     username: {
       type: DataTypes.STRING(USERNAME_MAX_LENGTH),
@@ -94,16 +88,6 @@ const Users = sequelize.define(
     comment: "Users accounts information.",
   },
 );
-
-Users.belongsTo(Genders, {
-  foreignKey: "idGender",
-});
-
-Genders.hasMany(Users, {
-  foreignKey: "idGender",
-  onDelete: "RESTRICT",
-  onUpdate: "CASCADE",
-});
 
 Users.prototype.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.passwordHash);
