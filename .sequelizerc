@@ -1,0 +1,12 @@
+require("dotenv/config");
+const path = require("path");
+
+const config = {
+  config: path.resolve("src/config", "db.config.js"),
+  "models-path": path.resolve("src/db", "models"),
+  "seeders-path": path.resolve("src/db", "seeders"),
+  "migrations-path": path.resolve("src/db", "migrations"),
+  debug: true,
+};
+
+module.exports = config;
