@@ -1,25 +1,30 @@
+const { Op } = require("sequelize");
+
 const { Users } = require("../db/models/users");
 
 const login = async (req, res, next) => {
   try {
-    const { username = "", password = "" } = req.body;
+    const { emailOrUsername = "", password = "" } = req.body;
 
     const user = await Users.findOne({
-      where: { username },
+      where: {
+        [Op.or]: [{ email: emailOrUsername }, { username: emailOrUsername }],
+      },
     });
 
     if (!user) {
-      return res.status(401).send({ error: "Invalid username or password" });
+      return res.status(401).send({ error: { message: "Invalid credentials" } });
     }
 
     const matchPassword = await user.comparePassword(password);
 
     if (!matchPassword) {
-      return res.status(401).send({ error: "Invalid username or password" });
+      return res.status(401).send({ error: { message: "Invalid credentials" } });
     }
 
-    req.tokenPayload = { id: user.id };
-    next();
+    const { passwordHash: _, ...userWithoutPassword } = user.dataValues;
+
+    res.status(200).send(userWithoutPassword);
   } catch (error) {
     next(error);
   }

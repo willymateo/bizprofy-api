@@ -11,7 +11,7 @@ const USERNAME_REGEX = "^[a-z0-9_.]*[a-z]+[a-z0-9_.]*$";
 const NODE_ENV = process.env.NODE_ENV || "development";
 const JWT_SECRET = process.env.JWT_SECRET;
 const PORT = process.env.PORT || 0;
-const USERNAME_MAX_LENGTH = 30;
+const USERNAME_MAX_LENGTH = 100;
 const USERNAME_MIN_LENGTH = 5;
 
 module.exports = {

@@ -22,7 +22,6 @@ const Users = sequelize.define(
       validate: {
         isUUID: 4,
       },
-      comment: "PK, unique identifier.",
     },
     username: {
       type: DataTypes.STRING(USERNAME_MAX_LENGTH),
@@ -35,7 +34,6 @@ const Users = sequelize.define(
         notEmpty: true,
         notNull: true,
       },
-      comment: `Unique. Must contain between ${USERNAME_MIN_LENGTH}-${USERNAME_MAX_LENGTH} characters. The allow characters are letters in lowercase, numbers and underscores. It must contain at least 1 letter in lowercase.`,
     },
     passwordHash: {
       type: DataTypes.STRING(60),
@@ -44,7 +42,6 @@ const Users = sequelize.define(
         notNull: true,
         notEmpty: true,
       },
-      comment: "Encrypted password.",
     },
     firstNames: {
       type: DataTypes.STRING(100),
@@ -63,7 +60,6 @@ const Users = sequelize.define(
         notNull: true,
         notEmpty: true,
       },
-      comment: "Email linked with the account. It must be unique.",
     },
     photoUrl: {
       type: DataTypes.STRING,
@@ -71,7 +67,6 @@ const Users = sequelize.define(
       validate: {
         isUrl: true,
       },
-      comment: "The url to profile photo.",
     },
   },
   {
@@ -79,7 +74,6 @@ const Users = sequelize.define(
     timestamps: true,
     underscored: true,
     tableName: "users",
-    comment: "Users accounts information.",
   },
 );
 
