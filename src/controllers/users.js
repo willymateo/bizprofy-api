@@ -11,10 +11,7 @@ const createUser = async (req, res, next) => {
     // Save the registers in the DB
     await newUserInstance.save();
 
-    req.tokenPayload = { id: newUserInstance.id };
-    req.onSucessMessage = "Success sign up";
-    req.onSucessCode = 201;
-    next();
+    res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     next(error);
   }
