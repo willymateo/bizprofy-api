@@ -1,5 +1,6 @@
 "use strict";
-const { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } = require("../../config/app.config");
+
+const { USERNAME_MAX_LENGTH } = require("../../config/app.config");
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -34,11 +35,13 @@ module.exports = {
         },
         first_names: {
           type: Sequelize.STRING,
-          allowNull: true,
+          defaultValue: "",
+          allowNull: false,
         },
         last_names: {
           type: Sequelize.STRING,
-          allowNull: true,
+          defaultValue: "",
+          allowNull: false,
         },
         email: {
           type: Sequelize.STRING,
@@ -47,7 +50,8 @@ module.exports = {
         },
         photo_url: {
           type: Sequelize.STRING,
-          allowNull: true,
+          defaultValue: "",
+          allowNull: false,
         },
         createdAt: {
           field: "created_at",

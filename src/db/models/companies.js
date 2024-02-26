@@ -1,7 +1,9 @@
 "use strict";
-const { sequelize } = require("../connection");
+
 const { DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
+
+const { sequelize } = require("../connection");
 
 const Companies = sequelize.define(
   "Companies",
@@ -18,7 +20,8 @@ const Companies = sequelize.define(
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: true,
+      defaultValue: "",
+      allowNull: false,
     },
   },
   {

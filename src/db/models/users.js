@@ -51,14 +51,17 @@ const Users = sequelize.define(
     },
     firstNames: {
       type: DataTypes.STRING,
-      allowNull: true,
+      defaultValue: "",
+      allowNull: false,
     },
     lastNames: {
       type: DataTypes.STRING,
-      allowNull: true,
+      defaultValue: "",
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
+      defaultValue: "",
       allowNull: false,
       unique: true,
       validate: {
@@ -69,10 +72,8 @@ const Users = sequelize.define(
     },
     photoUrl: {
       type: DataTypes.STRING,
-      allowNull: true,
-      validate: {
-        isUrl: true,
-      },
+      defaultValue: "",
+      allowNull: false,
     },
   },
   {

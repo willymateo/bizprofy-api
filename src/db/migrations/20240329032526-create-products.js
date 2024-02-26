@@ -24,23 +24,28 @@ module.exports = {
         },
         code: {
           type: Sequelize.STRING,
-          allowNull: true,
+          allowNull: false,
+          defaultValue: "",
         },
         name: {
           type: Sequelize.STRING,
-          allowNull: true,
+          allowNull: false,
+          defaultValue: "",
         },
         description: {
           type: Sequelize.STRING,
-          allowNull: true,
+          allowNull: false,
+          defaultValue: "",
         },
         photo_url: {
           type: Sequelize.STRING,
-          allowNull: true,
+          allowNull: false,
+          defaultValue: "",
         },
         unit_price: {
           type: Sequelize.DECIMAL(10, 2),
           allowNull: false,
+          defaultValue: 0,
         },
         createdAt: {
           field: "created_at",

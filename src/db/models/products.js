@@ -25,30 +25,31 @@ const Products = sequelize.define(
     },
     code: {
       type: DataTypes.STRING,
-      allowNull: true,
+      defaultValue: "",
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: true,
+      defaultValue: "",
+      allowNull: false,
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: true,
+      defaultValue: "",
+      allowNull: false,
     },
     unitPrice: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
+      defaultValue: 0,
       validate: {
         isDecimal: true,
-        isUrl: true,
       },
     },
     photoUrl: {
       type: DataTypes.STRING,
-      allowNull: true,
-      validate: {
-        isUrl: true,
-      },
+      defaultValue: "",
+      allowNull: false,
     },
   },
   {

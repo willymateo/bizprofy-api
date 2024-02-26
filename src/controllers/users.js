@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 
 const { BCRYPT_SALT_ROUNDS } = require("../config/app.config");
+const { Companies } = require("../db/models/companies");
 const { Users } = require("../db/models/users");
 
 const createUser = async (req, res, next) => {
