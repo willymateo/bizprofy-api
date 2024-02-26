@@ -7,8 +7,11 @@ const {
 const createUserSchema = {
   additionalProperties: false,
   type: "object",
-  required: ["username", "password", "firstNames", "lastNames", "email"],
+  required: ["companyName", "username", "password", "firstNames", "lastNames", "email"],
   properties: {
+    companyName: {
+      type: "string",
+    },
     username: {
       type: "string",
       minLength: USERNAME_MIN_LENGTH,

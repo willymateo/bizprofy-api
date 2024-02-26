@@ -1,17 +1,29 @@
+const bcrypt = require("bcrypt");
+
+const { BCRYPT_SALT_ROUNDS } = require("../config/app.config");
 const { Users } = require("../db/models/users");
 
 const createUser = async (req, res, next) => {
   try {
-    const { password, ...newUserData } = req.body;
+    const { password = "", companyName = "", ...newUserData } = req.body;
 
-    const passwordHash = await Users.encryptPassword(password);
+    const passwordHash = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
-    const newUserInstance = Users.build({ ...newUserData, passwordHash });
-    await newUserInstance.validate();
+    const newCompanyInstance = Companies.build({ name: companyName });
+    const newUserInstance = Users.build({
+      ...newUserData,
+      companyId: newCompanyInstance.id,
+      passwordHash,
+    });
+
+    // Validate data
+    await Promise.all([newUserInstance.validate(), newCompanyInstance.validate()]);
+
     // Save the registers in the DB
+    await newCompanyInstance.save();
     await newUserInstance.save();
 
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({ message: "Company and user created successfully" });
   } catch (error) {
     next(error);
   }

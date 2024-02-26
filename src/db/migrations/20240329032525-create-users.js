@@ -26,15 +26,15 @@ module.exports = {
           comment: "Encrypted password.",
         },
         first_names: {
-          type: Sequelize.STRING(100),
+          type: Sequelize.STRING,
           allowNull: true,
         },
         last_names: {
-          type: Sequelize.STRING(100),
+          type: Sequelize.STRING,
           allowNull: true,
         },
         email: {
-          type: Sequelize.STRING(100),
+          type: Sequelize.STRING,
           allowNull: false,
           unique: true,
           comment: "Email linked with the account. It must be unique.",

@@ -1,20 +1,22 @@
 "use strict";
-const { sequelize } = require("../connection");
+
 const { DataTypes } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
+
+const { sequelize } = require("../connection");
+const { Companies } = require("./companies");
 const {
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
-  BCRYPT_SALT_ROUNDS,
   USERNAME_REGEX,
 } = require("../../config/app.config");
-const { v4: uuidv4 } = require("uuid");
-const bcrypt = require("bcrypt");
 
 const Users = sequelize.define(
   "Users",
   {
     id: {
-      type: DataTypes.UUID,
+      type: DataTypes.UUIDV4,
       primaryKey: true,
       unique: true,
       allowNull: false,
@@ -22,6 +24,10 @@ const Users = sequelize.define(
       validate: {
         isUUID: 4,
       },
+    },
+    companyId: {
+      type: DataTypes.UUIDV4,
+      allowNull: false,
     },
     username: {
       type: DataTypes.STRING(USERNAME_MAX_LENGTH),
@@ -44,15 +50,15 @@ const Users = sequelize.define(
       },
     },
     firstNames: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING,
       allowNull: true,
     },
     lastNames: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING,
       allowNull: true,
     },
     email: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
@@ -77,10 +83,18 @@ const Users = sequelize.define(
   },
 );
 
+Users.belongsTo(Companies, {
+  foreignKey: "companyId",
+});
+
+Companies.hasMany(Users, {
+  foreignKey: "companyId",
+  onDelete: "RESTRICT",
+  onUpdate: "CASCADE",
+});
+
 Users.prototype.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.passwordHash);
 };
-
-Users.encryptPassword = password => bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
 module.exports = { Users };
