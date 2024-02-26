@@ -26,6 +26,7 @@ const Products = sequelize.define(
     code: {
       type: DataTypes.STRING,
       defaultValue: "",
+      unique: true,
       allowNull: false,
     },
     name: {

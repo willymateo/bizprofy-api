@@ -1,4 +1,3 @@
-const { Companies } = require("../db/models/companies");
 const { Products } = require("../db/models/products");
 
 const getProducts = async (req, res, next) => {
@@ -13,15 +12,12 @@ const getProducts = async (req, res, next) => {
 
 const createProduct = async (req, res, next) => {
   try {
-    const { companyId = "" } = req.body;
+    const { company } = req.auth;
 
-    const company = await Companies.findOne({ where: { id: companyId } });
-
-    if (!company) {
-      return res.status(404).send({ error: { message: "Company not found" } });
-    }
-
-    const newProductInstance = Products.build(req.body);
+    const newProductInstance = Products.build({
+      ...req.body,
+      companyId: company.id,
+    });
 
     // Validate data
     await newProductInstance.validate();

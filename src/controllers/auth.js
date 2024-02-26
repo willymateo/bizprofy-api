@@ -26,10 +26,12 @@ const login = async (req, res, next) => {
 
     const { passwordHash: _, companyId: __, ...userWithoutPassword } = user.dataValues;
 
-    res.status(200).send({
+    req.tokenPayload = {
       ...userWithoutPassword,
       company: company.dataValues,
-    });
+    };
+
+    next();
   } catch (error) {
     next(error);
   }

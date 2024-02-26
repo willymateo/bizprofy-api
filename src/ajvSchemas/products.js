@@ -1,11 +1,8 @@
 const createProductSchema = {
   additionalProperties: false,
   type: "object",
-  required: ["companyId", "code", "name", "unitPrice"],
+  required: ["code", "name", "unitPrice"],
   properties: {
-    companyId: {
-      type: "string",
-    },
     code: {
       type: "string",
     },
