@@ -22,9 +22,16 @@ const login = async (req, res, next) => {
       return res.status(401).send({ error: { message: "Invalid credentials" } });
     }
 
-    const { passwordHash: _, ...userWithoutPassword } = user.dataValues;
+    const company = await user.getCompany();
 
-    res.status(200).send(userWithoutPassword);
+    const { passwordHash: _, companyId: __, ...userWithoutPassword } = user.dataValues;
+
+    req.tokenPayload = {
+      ...userWithoutPassword,
+      company: company.dataValues,
+    };
+
+    next();
   } catch (error) {
     next(error);
   }

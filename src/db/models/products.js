@@ -2,18 +2,12 @@
 
 const { DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
-const bcrypt = require("bcrypt");
 
 const { sequelize } = require("../connection");
 const { Companies } = require("./companies");
-const {
-  USERNAME_MAX_LENGTH,
-  USERNAME_MIN_LENGTH,
-  USERNAME_REGEX,
-} = require("../../config/app.config");
 
-const Users = sequelize.define(
-  "Users",
+const Products = sequelize.define(
+  "Products",
   {
     id: {
       type: DataTypes.UUIDV4,
@@ -29,45 +23,28 @@ const Users = sequelize.define(
       type: DataTypes.UUIDV4,
       allowNull: false,
     },
-    username: {
-      type: DataTypes.STRING(USERNAME_MAX_LENGTH),
-      allowNull: false,
+    code: {
+      type: DataTypes.STRING,
+      defaultValue: "",
       unique: true,
-      validate: {
-        len: [USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH],
-        is: new RegExp(USERNAME_REGEX),
-        isLowercase: true,
-        notEmpty: true,
-        notNull: true,
-      },
-    },
-    passwordHash: {
-      type: DataTypes.STRING(60),
       allowNull: false,
-      validate: {
-        notNull: true,
-        notEmpty: true,
-      },
     },
-    firstNames: {
+    name: {
       type: DataTypes.STRING,
       defaultValue: "",
       allowNull: false,
     },
-    lastNames: {
+    description: {
       type: DataTypes.STRING,
       defaultValue: "",
       allowNull: false,
     },
-    email: {
-      type: DataTypes.STRING,
-      defaultValue: "",
+    unitPrice: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
-      unique: true,
+      defaultValue: 0,
       validate: {
-        isEmail: true,
-        notNull: true,
-        notEmpty: true,
+        isDecimal: true,
       },
     },
     photoUrl: {
@@ -80,22 +57,18 @@ const Users = sequelize.define(
     paranoid: true,
     timestamps: true,
     underscored: true,
-    tableName: "users",
+    tableName: "products",
   },
 );
 
-Users.belongsTo(Companies, {
+Products.belongsTo(Companies, {
   foreignKey: "companyId",
 });
 
-Companies.hasMany(Users, {
+Companies.hasMany(Products, {
   foreignKey: "companyId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
 });
 
-Users.prototype.comparePassword = async function (password) {
-  return await bcrypt.compare(password, this.passwordHash);
-};
-
-module.exports = { Users };
+module.exports = { Products };
