@@ -44,7 +44,7 @@ module.exports = {
           defaultValue: "",
         },
         unit_price: {
-          type: Sequelize.DECIMAL(10, 2),
+          type: Sequelize.DOUBLE,
           allowNull: false,
           defaultValue: 0,
         },

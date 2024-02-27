@@ -27,7 +27,7 @@ const verifyToken = (req, res, next) => {
       }
 
       const userInstance = await Users.findByPk(decodedToken.id, {});
-      const companyInstance = await userInstance.getCompany();
+      const companyInstance = await userInstance?.getCompany();
 
       if (!userInstance) {
         console.log("No user found in the JWT");

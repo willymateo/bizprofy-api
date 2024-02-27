@@ -9,6 +9,7 @@ const dbConfig = {
     dialectOptions: {
       supportBigNumbers: true,
       bigNumberStrings: true,
+      decimalNumbers: true,
     },
     logging: false,
   },
@@ -22,6 +23,7 @@ const dbConfig = {
     dialectOptions: {
       supportBigNumbers: true,
       bigNumberStrings: true,
+      decimalNumbers: true,
     },
     logging: false,
   },
