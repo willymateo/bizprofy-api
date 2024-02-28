@@ -53,11 +53,17 @@ const Users = sequelize.define(
       type: DataTypes.STRING,
       defaultValue: "",
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     lastNames: {
       type: DataTypes.STRING,
       defaultValue: "",
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     email: {
       type: DataTypes.STRING,

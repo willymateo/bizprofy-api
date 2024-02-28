@@ -23,6 +23,7 @@ const Products = sequelize.define(
       type: DataTypes.UUIDV4,
       allowNull: false,
     },
+    // the code is not required so, validate if this field can be null
     code: {
       type: DataTypes.STRING,
       defaultValue: "",
@@ -33,6 +34,9 @@ const Products = sequelize.define(
       type: DataTypes.STRING,
       defaultValue: "",
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     description: {
       type: DataTypes.STRING,
