@@ -2,7 +2,8 @@ const { Products } = require("../db/models/products");
 
 const getProducts = async (req, res, next) => {
   try {
-    const products = await Products.findAll();
+    const { company } = req.auth;
+    const products = await company.getProducts({});
 
     res.status(200).json(products);
   } catch (error) {

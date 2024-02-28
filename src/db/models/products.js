@@ -40,7 +40,7 @@ const Products = sequelize.define(
       allowNull: false,
     },
     unitPrice: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DOUBLE,
       allowNull: false,
       defaultValue: 0,
       validate: {

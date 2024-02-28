@@ -1,3 +1,16 @@
+const getProductsSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    limit: {
+      type: "number",
+    },
+    offset: {
+      type: "number",
+    },
+  },
+};
+
 const createProductSchema = {
   additionalProperties: false,
   type: "object",
@@ -18,4 +31,4 @@ const createProductSchema = {
   },
 };
 
-module.exports = { createProductSchema };
+module.exports = { getProductsSchema, createProductSchema };
