@@ -2,6 +2,24 @@ const getProductsSchema = {
   additionalProperties: false,
   type: "object",
   properties: {
+    q: {
+      type: "string",
+    },
+    unitCostLessThanOrEqualTo: {
+      type: "number",
+    },
+    unitCostGreaterThanOrEqualTo: {
+      type: "number",
+    },
+    unitPriceLessThanOrEqualTo: {
+      type: "number",
+    },
+    unitPriceGreaterThanOrEqualTo: {
+      type: "number",
+    },
+    order: {
+      type: "string",
+    },
     limit: {
       type: "number",
     },
@@ -14,7 +32,7 @@ const getProductsSchema = {
 const createProductSchema = {
   additionalProperties: false,
   type: "object",
-  required: ["code", "name", "unitPrice"],
+  required: ["name", "unitCost", "unitPrice"],
   properties: {
     code: {
       type: "string",
@@ -24,6 +42,9 @@ const createProductSchema = {
     },
     description: {
       type: "string",
+    },
+    unitCost: {
+      type: "number",
     },
     unitPrice: {
       type: "number",

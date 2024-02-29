@@ -5,8 +5,8 @@ module.exports = {
       "stock_types",
       {
         id: {
-          type: Sequelize.UUID,
-          defaultValue: Sequelize.fn("gen_random_uuid"),
+          type: Sequelize.SMALLINT,
+          autoIncrement: true,
           allowNull: false,
           primaryKey: true,
           unique: true,
@@ -36,7 +36,7 @@ module.exports = {
         },
       },
       {
-        comment: "All types that can have an stock",
+        comment: "Stock types",
       },
     );
   },

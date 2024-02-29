@@ -3,7 +3,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "products",
+      "stock",
       {
         id: {
           type: Sequelize.UUID,
@@ -13,7 +13,7 @@ module.exports = {
           unique: true,
         },
         stock_type_id: {
-          type: Sequelize.UUID,
+          type: Sequelize.SMALLINT,
           allowNull: false,
           references: {
             model: "stock_types", // Table name.
@@ -37,7 +37,7 @@ module.exports = {
           allowNull: false,
           defaultValue: 0,
         },
-        stock_date: {
+        transaction_date: {
           type: Sequelize.DATE,
           allowNull: false,
           defaultValue: Sequelize.fn("NOW"),
@@ -62,11 +62,11 @@ module.exports = {
         },
       },
       {
-        comment: "Products accounts information.",
+        comment: "Product stock",
       },
     );
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("products");
+    await queryInterface.dropTable("stock");
   },
 };

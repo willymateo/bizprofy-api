@@ -24,9 +24,9 @@ module.exports = {
         },
         code: {
           type: Sequelize.STRING,
-          allowNull: false,
-          defaultValue: "",
+          defaultValue: null,
           unique: true,
+          allowNull: true,
         },
         name: {
           type: Sequelize.STRING,
@@ -42,6 +42,11 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
           defaultValue: "",
+        },
+        unit_cost: {
+          type: Sequelize.DOUBLE,
+          allowNull: false,
+          defaultValue: 0,
         },
         unit_price: {
           type: Sequelize.DOUBLE,
@@ -68,7 +73,7 @@ module.exports = {
         },
       },
       {
-        comment: "Products accounts information.",
+        comment: "Products accounts information",
       },
     );
   },

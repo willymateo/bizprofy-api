@@ -23,12 +23,11 @@ const Products = sequelize.define(
       type: DataTypes.UUIDV4,
       allowNull: false,
     },
-    // the code is not required so, validate if this field can be null
     code: {
       type: DataTypes.STRING,
-      defaultValue: "",
+      defaultValue: null,
       unique: true,
-      allowNull: false,
+      allowNull: true,
     },
     name: {
       type: DataTypes.STRING,
@@ -42,6 +41,14 @@ const Products = sequelize.define(
       type: DataTypes.STRING,
       defaultValue: "",
       allowNull: false,
+    },
+    unitCost: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        isDecimal: true,
+      },
     },
     unitPrice: {
       type: DataTypes.DOUBLE,
@@ -67,6 +74,7 @@ const Products = sequelize.define(
 
 Products.belongsTo(Companies, {
   foreignKey: "companyId",
+  as: "company",
 });
 
 Companies.hasMany(Products, {

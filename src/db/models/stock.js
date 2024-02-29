@@ -21,7 +21,7 @@ const Stock = sequelize.define(
       },
     },
     stockTypeId: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.SMALLINT,
       allowNull: false,
     },
     productId: {
@@ -37,7 +37,7 @@ const Stock = sequelize.define(
         min: 0,
       },
     },
-    stockDate: {
+    transactionDate: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
       allowNull: false,
@@ -53,6 +53,7 @@ const Stock = sequelize.define(
 
 Stock.belongsTo(StockTypes, {
   foreignKey: "stockTypeId",
+  as: "stockType",
 });
 
 StockTypes.hasMany(Stock, {
@@ -63,6 +64,7 @@ StockTypes.hasMany(Stock, {
 
 Stock.belongsTo(Products, {
   foreignKey: "productId",
+  as: "product",
 });
 
 Products.hasMany(Stock, {

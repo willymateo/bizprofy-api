@@ -73,7 +73,7 @@ module.exports = {
         },
       },
       {
-        comment: "Users accounts information.",
+        comment: "Users accounts information",
       },
     );
   },

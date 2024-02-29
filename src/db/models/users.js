@@ -92,6 +92,7 @@ const Users = sequelize.define(
 
 Users.belongsTo(Companies, {
   foreignKey: "companyId",
+  as: "company",
 });
 
 Companies.hasMany(Users, {

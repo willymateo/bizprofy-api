@@ -37,7 +37,7 @@ module.exports = {
         },
       },
       {
-        comment: "Companies information.",
+        comment: "Companies information",
       },
     );
   },
