@@ -1,29 +1,27 @@
 "use strict";
 
 const { DataTypes } = require("sequelize");
-const { v4: uuidv4 } = require("uuid");
 
 const { sequelize } = require("../connection");
 
-const Companies = sequelize.define(
-  "Companies",
+const StockTypes = sequelize.define(
+  "StockTypes",
   {
     id: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.SMALLINT,
+      autoIncrement: true,
       primaryKey: true,
+      allowNull: false,
       unique: true,
-      allowNull: false,
-      defaultValue: () => uuidv4(),
-      validate: {
-        isUUID: 4,
-      },
     },
-    name: {
+    type: {
       type: DataTypes.STRING,
-      defaultValue: "",
       allowNull: false,
+      unique: true,
       validate: {
+        notNull: true,
         notEmpty: true,
+        isLowercase: true,
       },
     },
   },
@@ -31,8 +29,8 @@ const Companies = sequelize.define(
     paranoid: true,
     timestamps: true,
     underscored: true,
-    tableName: "companies",
+    tableName: "stock_types",
   },
 );
 
-module.exports = { Companies };
+module.exports = { StockTypes };

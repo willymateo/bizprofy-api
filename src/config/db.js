@@ -1,30 +1,25 @@
+const baseConfig = {
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  dialect: "postgres",
+  dialectOptions: {
+    supportBigNumbers: true,
+    bigNumberStrings: true,
+    decimalNumbers: true,
+  },
+  logging: true,
+};
+
 const dbConfig = {
   development: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DATABASE,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: "postgres",
-    dialectOptions: {
-      supportBigNumbers: true,
-      bigNumberStrings: true,
-      decimalNumbers: true,
-    },
-    logging: false,
+    ...baseConfig,
+    logging: true,
   },
   production: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DATABASE,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: "postgres",
-    dialectOptions: {
-      supportBigNumbers: true,
-      bigNumberStrings: true,
-      decimalNumbers: true,
-    },
+    ...baseConfig,
     logging: false,
   },
 };

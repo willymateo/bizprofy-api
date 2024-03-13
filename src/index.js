@@ -10,6 +10,7 @@ const { MORGAN_FORMAT, NODE_ENV, PORT } = require("./config/app.config");
 const { notFound, errorHandler } = require("./middlewares/error");
 const productsRouter = require("./routes/products");
 const usersRouter = require("./routes/users");
+const stockRouter = require("./routes/stock");
 const authRouter = require("./routes/auth");
 const pkg = require("../package.json");
 
@@ -37,6 +38,7 @@ app.get("/", (req, res) => {
 });
 app.use("/products", productsRouter);
 app.use("/users", usersRouter);
+app.use("/stock", stockRouter);
 app.use("/auth", authRouter);
 app.use(notFound);
 app.use(errorHandler);

@@ -1,21 +1,20 @@
 "use strict";
-
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "companies",
+      "stock_types",
       {
         id: {
-          type: Sequelize.UUID,
-          defaultValue: Sequelize.fn("gen_random_uuid"),
+          type: Sequelize.SMALLINT,
+          autoIncrement: true,
           allowNull: false,
           primaryKey: true,
           unique: true,
         },
-        name: {
+        type: {
           type: Sequelize.STRING,
-          defaultValue: "",
           allowNull: false,
+          unique: true,
         },
         createdAt: {
           field: "created_at",
@@ -37,11 +36,11 @@ module.exports = {
         },
       },
       {
-        comment: "Companies information",
+        comment: "Stock types",
       },
     );
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("companies");
+    await queryInterface.dropTable("stock_types");
   },
 };

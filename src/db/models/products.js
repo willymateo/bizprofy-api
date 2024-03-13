@@ -25,19 +25,30 @@ const Products = sequelize.define(
     },
     code: {
       type: DataTypes.STRING,
-      defaultValue: "",
+      defaultValue: null,
       unique: true,
-      allowNull: false,
+      allowNull: true,
     },
     name: {
       type: DataTypes.STRING,
       defaultValue: "",
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     description: {
       type: DataTypes.STRING,
       defaultValue: "",
       allowNull: false,
+    },
+    unitCost: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        isDecimal: true,
+      },
     },
     unitPrice: {
       type: DataTypes.DOUBLE,
@@ -63,6 +74,7 @@ const Products = sequelize.define(
 
 Products.belongsTo(Companies, {
   foreignKey: "companyId",
+  as: "company",
 });
 
 Companies.hasMany(Products, {

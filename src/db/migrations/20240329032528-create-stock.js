@@ -3,7 +3,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "products",
+      "stock",
       {
         id: {
           type: Sequelize.UUID,
@@ -12,46 +12,35 @@ module.exports = {
           primaryKey: true,
           unique: true,
         },
-        company_id: {
-          type: Sequelize.UUID,
+        stock_type_id: {
+          type: Sequelize.SMALLINT,
           allowNull: false,
           references: {
-            model: "companies", // Table name.
+            model: "stock_types", // Table name.
             key: "id",
           },
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
         },
-        code: {
-          type: Sequelize.STRING,
-          defaultValue: null,
-          unique: true,
-          allowNull: true,
-        },
-        name: {
-          type: Sequelize.STRING,
+        product_id: {
+          type: Sequelize.UUID,
           allowNull: false,
-          defaultValue: "",
+          references: {
+            model: "products", // Table name.
+            key: "id",
+          },
+          onDelete: "RESTRICT",
+          onUpdate: "CASCADE",
         },
-        description: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          defaultValue: "",
-        },
-        photo_url: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          defaultValue: "",
-        },
-        unit_cost: {
-          type: Sequelize.DOUBLE,
+        quantity: {
+          type: Sequelize.INTEGER,
           allowNull: false,
           defaultValue: 0,
         },
-        unit_price: {
-          type: Sequelize.DOUBLE,
+        transaction_date: {
+          type: Sequelize.DATE,
           allowNull: false,
-          defaultValue: 0,
+          defaultValue: Sequelize.fn("NOW"),
         },
         createdAt: {
           field: "created_at",
@@ -73,11 +62,11 @@ module.exports = {
         },
       },
       {
-        comment: "Products accounts information",
+        comment: "Product stock",
       },
     );
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("products");
+    await queryInterface.dropTable("stock");
   },
 };
