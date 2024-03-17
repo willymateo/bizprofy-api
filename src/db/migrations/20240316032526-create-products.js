@@ -22,6 +22,26 @@ module.exports = {
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
         },
+        product_category_id: {
+          type: Sequelize.UUID,
+          allowNull: true,
+          references: {
+            model: "product_categories", // Table name.
+            key: "id",
+          },
+          onDelete: "RESTRICT",
+          onUpdate: "CASCADE",
+        },
+        provider_id: {
+          type: Sequelize.UUID,
+          allowNull: true,
+          references: {
+            model: "providers", // Table name.
+            key: "id",
+          },
+          onDelete: "RESTRICT",
+          onUpdate: "CASCADE",
+        },
         code: {
           type: Sequelize.STRING,
           defaultValue: null,

@@ -3,8 +3,10 @@
 const { DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 
+const { ProductCategories } = require("./productCategories");
 const { sequelize } = require("../connection");
 const { Companies } = require("./companies");
+const { Providers } = require("./providers");
 
 const Products = sequelize.define(
   "Products",
@@ -22,6 +24,14 @@ const Products = sequelize.define(
     companyId: {
       type: DataTypes.UUIDV4,
       allowNull: false,
+    },
+    productCategoryId: {
+      type: DataTypes.UUIDV4,
+      allowNull: true,
+    },
+    providerId: {
+      type: DataTypes.UUIDV4,
+      allowNull: true,
     },
     code: {
       type: DataTypes.STRING,
@@ -79,6 +89,28 @@ Products.belongsTo(Companies, {
 
 Companies.hasMany(Products, {
   foreignKey: "companyId",
+  onDelete: "RESTRICT",
+  onUpdate: "CASCADE",
+});
+
+Products.belongsTo(ProductCategories, {
+  foreignKey: "productCategoryId",
+  as: "productCategory",
+});
+
+ProductCategories.hasMany(Products, {
+  foreignKey: "productCategoryId",
+  onDelete: "RESTRICT",
+  onUpdate: "CASCADE",
+});
+
+Products.belongsTo(Providers, {
+  foreignKey: "providerId",
+  as: "provider",
+});
+
+Providers.hasMany(Products, {
+  foreignKey: "providerId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
 });

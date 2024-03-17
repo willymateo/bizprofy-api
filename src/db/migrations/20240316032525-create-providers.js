@@ -3,7 +3,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "stock",
+      "providers",
       {
         id: {
           type: Sequelize.UUID,
@@ -12,35 +12,45 @@ module.exports = {
           primaryKey: true,
           unique: true,
         },
-        stock_type_id: {
-          type: Sequelize.SMALLINT,
-          allowNull: false,
-          references: {
-            model: "stock_types", // Table name.
-            key: "id",
-          },
-          onDelete: "RESTRICT",
-          onUpdate: "CASCADE",
-        },
-        product_id: {
+        company_id: {
           type: Sequelize.UUID,
           allowNull: false,
           references: {
-            model: "products", // Table name.
+            model: "companies", // Table name.
             key: "id",
           },
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
+          unique: "unique_provider_company_id_id_card",
         },
-        quantity: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          defaultValue: 0,
+        id_card: {
+          type: Sequelize.STRING,
+          allowNull: true,
+          unique: "unique_provider_company_id_id_card",
         },
-        transaction_date: {
-          type: Sequelize.DATE,
+        first_names: {
+          type: Sequelize.STRING,
+          defaultValue: "",
           allowNull: false,
-          defaultValue: Sequelize.fn("NOW"),
+        },
+        last_names: {
+          type: Sequelize.STRING,
+          defaultValue: "",
+          allowNull: false,
+        },
+        email: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
+        phone_number: {
+          type: Sequelize.STRING,
+          defaultValue: "",
+          allowNull: false,
+        },
+        address: {
+          type: Sequelize.STRING,
+          defaultValue: "",
+          allowNull: false,
         },
         createdAt: {
           field: "created_at",
@@ -62,11 +72,11 @@ module.exports = {
         },
       },
       {
-        comment: "Product stock",
+        comment: "Providers accounts information",
       },
     );
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("stock");
+    await queryInterface.dropTable("providers");
   },
 };
