@@ -38,10 +38,13 @@ const getStockSquema = {
 const createStockSquema = {
   additionalProperties: false,
   type: "object",
-  required: ["stockTypeId", "productId", "quantity"],
+  required: ["stockTypeId", "warehouseId", "productId", "quantity"],
   properties: {
     stockTypeId: {
       type: "number",
+    },
+    warehouseId: {
+      type: "string",
     },
     productId: {
       type: "string",

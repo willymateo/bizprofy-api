@@ -21,10 +21,13 @@ const createUser = async (req, res, next) => {
     await Promise.all([newUserInstance.validate(), newCompanyInstance.validate()]);
 
     // Save the registers in the DB
-    await newCompanyInstance.save();
-    await newUserInstance.save();
+    const newCompany = await newCompanyInstance.save();
+    const newUser = await newUserInstance.save();
 
-    res.status(201).json({ message: "Company and user created successfully" });
+    res.status(201).json({
+      company: newCompany,
+      user: newUser,
+    });
   } catch (error) {
     next(error);
   }

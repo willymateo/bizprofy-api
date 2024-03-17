@@ -30,7 +30,6 @@ const Customers = sequelize.define(
       unique: "unique_customer_company_id_id_card",
       validate: {
         notEmpty: true,
-        allowNull: false,
       },
     },
     firstNames: {
