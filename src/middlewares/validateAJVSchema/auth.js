@@ -1,4 +1,4 @@
-const { loginSchema } = require("../../ajvSchemas/auth");
+const { loginSchema, signUpSchema } = require("../../ajvSchemas/auth");
 const { validateAJVSchema } = require(".");
 
 const validateLoginSchema = (req, res, next) => {
@@ -10,4 +10,13 @@ const validateLoginSchema = (req, res, next) => {
   validateAJVSchema(req, res, next);
 };
 
-module.exports = { validateLoginSchema };
+const validateSignUpSchema = (req, res, next) => {
+  req.ajv = {
+    schema: signUpSchema,
+    data: req.body,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
+module.exports = { validateLoginSchema, validateSignUpSchema };

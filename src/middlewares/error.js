@@ -6,7 +6,7 @@ const notFound = (req, res, next) => {
 };
 
 const errorHandler = (error, req, res, next) => {
-  console.log(error);
+  console.log("General error handler:", error);
 
   const message = error.message || "Internal server error";
   const name = error.name || "InternalServerError";
