@@ -1,4 +1,24 @@
 const { Warehouses } = require("../db/models/warehouses");
+const { ORDER } = require("../constants");
+
+const getWarehouses = async (req, res, next) => {
+  try {
+    const { orderByField = "createdAt", order = ORDER.DESC, limit = 50, offset = 0 } = req.query;
+    const { company } = req.decodedToken;
+
+    const bdResult = await Warehouses.findAndCountAll({
+      where: { companyId: company.id },
+      paranoid: false,
+      offset,
+      limit,
+      order: [[orderByField, order]],
+    });
+
+    res.status(200).json(bdResult);
+  } catch (err) {
+    next(err);
+  }
+};
 
 const createWarehouse = async (req, res, next) => {
   try {
@@ -25,4 +45,4 @@ const createWarehouse = async (req, res, next) => {
   }
 };
 
-module.exports = { createWarehouse };
+module.exports = { createWarehouse, getWarehouses };
