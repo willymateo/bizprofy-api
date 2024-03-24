@@ -1,13 +1,42 @@
+const { Op } = require("sequelize");
+
 const { Providers } = require("../db/models/providers");
 const { ORDER } = require("../constants");
 
 const getProviders = async (req, res, next) => {
   try {
-    const { orderByField = "createdAt", order = ORDER.DESC, limit = 50, offset = 0 } = req.query;
     const { company } = req.decodedToken;
+    const {
+      orderByField = "createdAt",
+      order = ORDER.DESC,
+      limit = 50,
+      offset = 0,
+      q = "",
+    } = req.query;
 
     const bdResult = await Providers.findAndCountAll({
-      where: { companyId: company.id },
+      where: {
+        companyId: company.id,
+        ...(q && {
+          [Op.or]: [
+            {
+              idCard: {
+                [Op.iLike]: `%${q}%`,
+              },
+            },
+            {
+              firstNames: {
+                [Op.iLike]: `%${q}%`,
+              },
+            },
+            {
+              lastNames: {
+                [Op.iLike]: `%${q}%`,
+              },
+            },
+          ],
+        }),
+      },
       paranoid: false,
       offset,
       limit,
