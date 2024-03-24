@@ -9,19 +9,19 @@ const getStockSquema = {
       type: "string",
     },
     quantityGreaterThanOrEqualTo: {
-      type: "number",
+      type: "string",
     },
     quantityLessThanOrEqualTo: {
-      type: "number",
+      type: "string",
     },
     order: {
       type: "string",
     },
     limit: {
-      type: "number",
+      type: "string",
     },
     offset: {
-      type: "number",
+      type: "string",
     },
     orderByField: {
       type: "string",
@@ -38,10 +38,13 @@ const getStockSquema = {
 const createStockSquema = {
   additionalProperties: false,
   type: "object",
-  required: ["stockTypeId", "productId", "quantity"],
+  required: ["stockTypeId", "warehouseId", "productId", "quantity"],
   properties: {
     stockTypeId: {
       type: "number",
+    },
+    warehouseId: {
+      type: "string",
     },
     productId: {
       type: "string",

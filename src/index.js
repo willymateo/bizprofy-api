@@ -7,7 +7,11 @@ const cors = require("cors");
 const path = require("path");
 
 const { MORGAN_FORMAT, NODE_ENV, PORT } = require("./config/app.config");
+const productCategoriesRouter = require("./routes/productCategories");
 const { notFound, errorHandler } = require("./middlewares/error");
+const warehousesRouter = require("./routes/warehouses");
+const customersRouter = require("./routes/customers");
+const providersRouter = require("./routes/providers");
 const productsRouter = require("./routes/products");
 const usersRouter = require("./routes/users");
 const stockRouter = require("./routes/stock");
@@ -36,6 +40,10 @@ app.get("/", (req, res) => {
     description: app.get("pkg").description,
   });
 });
+app.use("/product-categories", productCategoriesRouter);
+app.use("/warehouses", warehousesRouter);
+app.use("/customers", customersRouter);
+app.use("/providers", providersRouter);
 app.use("/products", productsRouter);
 app.use("/users", usersRouter);
 app.use("/stock", stockRouter);

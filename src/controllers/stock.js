@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 
+const { Warehouses } = require("../db/models/warehouses");
 const { StockTypes } = require("../db/models/stockTypes");
 const { Products } = require("../db/models/products");
 const { Stock } = require("../db/models/stock");
@@ -25,6 +26,7 @@ const getStock = async (req, res, next) => {
       include: [
         { model: Products, as: "product", where: { companyId: company.id } },
         { model: StockTypes, as: "stockType" },
+        { model: Warehouses, as: "warehouse" },
       ],
       attributes: { exclude: ["stockTypeId", "productId"] },
       where: {
@@ -89,9 +91,9 @@ const createStock = async (req, res, next) => {
     await newStockInstance.validate();
 
     // Save the registers in the DB
-    await newStockInstance.save();
+    const newStock = await newStockInstance.save();
 
-    res.status(201).json({ message: "Stock created successfully" });
+    res.status(201).json(newStock);
   } catch (error) {
     next(error);
   }

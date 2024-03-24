@@ -1,5 +1,7 @@
 const { Op } = require("sequelize");
 
+const { ProductCategories } = require("../db/models/productCategories");
+const { Providers } = require("../db/models/providers");
 const { Products } = require("../db/models/products");
 const { ORDER } = require("../constants");
 
@@ -18,6 +20,10 @@ const getProducts = async (req, res, next) => {
     const { company } = req.auth;
 
     const products = await company.getProducts({
+      include: [
+        { model: ProductCategories, as: "productCategory" },
+        { model: Providers, as: "provider" },
+      ],
       where: {
         ...(q && {
           [Op.or]: [
@@ -73,11 +79,13 @@ const getProducts = async (req, res, next) => {
 const createProduct = async (req, res, next) => {
   try {
     const code = req.body.code || null;
-    const { company } = req.auth;
+    const {
+      company: { id: companyId },
+    } = req.auth;
 
     const newProductInstance = Products.build({
       ...req.body,
-      companyId: company.id,
+      companyId,
       code,
     });
 
@@ -85,9 +93,9 @@ const createProduct = async (req, res, next) => {
     await newProductInstance.validate();
 
     // Save the registers in the DB
-    await newProductInstance.save();
+    const newProduct = await newProductInstance.save();
 
-    res.status(201).json({ message: "Product created successfully" });
+    res.status(201).json(newProduct);
   } catch (error) {
     next(error);
   }

@@ -4,14 +4,31 @@ const {
   USERNAME_REGEX,
 } = require("../config/app.config");
 
+const getUsersSchema = {
+  additionalProperties: false,
+  type: "object",
+  required: [],
+  properties: {
+    orderByField: {
+      type: "string",
+    },
+    order: {
+      type: "string",
+    },
+    limit: {
+      type: "string",
+    },
+    offset: {
+      type: "string",
+    },
+  },
+};
+
 const createUserSchema = {
   additionalProperties: false,
   type: "object",
-  required: ["companyName", "username", "password", "firstNames", "lastNames", "email"],
+  required: ["username", "password", "firstNames", "lastNames", "email"],
   properties: {
-    companyName: {
-      type: "string",
-    },
     username: {
       type: "string",
       minLength: USERNAME_MIN_LENGTH,
@@ -38,4 +55,4 @@ const createUserSchema = {
   },
 };
 
-module.exports = { createUserSchema };
+module.exports = { createUserSchema, getUsersSchema };

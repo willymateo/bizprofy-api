@@ -32,8 +32,14 @@ const getProductsSchema = {
 const createProductSchema = {
   additionalProperties: false,
   type: "object",
-  required: ["name", "unitCost", "unitPrice"],
+  required: ["productCategoryId", "providerId", "name", "unitCost", "unitPrice"],
   properties: {
+    productCategoryId: {
+      type: "string",
+    },
+    providerId: {
+      type: "string",
+    },
     code: {
       type: "string",
     },
