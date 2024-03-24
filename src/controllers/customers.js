@@ -1,4 +1,24 @@
 const { Customers } = require("../db/models/customers");
+const { ORDER } = require("../constants");
+
+const getCustomers = async (req, res, next) => {
+  try {
+    const { orderByField = "createdAt", order = ORDER.DESC, limit = 50, offset = 0 } = req.query;
+    const { company } = req.decodedToken;
+
+    const bdResult = await Customers.findAndCountAll({
+      where: { companyId: company.id },
+      paranoid: false,
+      offset,
+      limit,
+      order: [[orderByField, order]],
+    });
+
+    res.status(200).json(bdResult);
+  } catch (err) {
+    next(err);
+  }
+};
 
 const createCustomer = async (req, res, next) => {
   try {
@@ -23,4 +43,4 @@ const createCustomer = async (req, res, next) => {
   }
 };
 
-module.exports = { createCustomer };
+module.exports = { createCustomer, getCustomers };

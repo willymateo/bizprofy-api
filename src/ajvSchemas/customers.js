@@ -1,3 +1,23 @@
+const getCustomersSchema = {
+  additionalProperties: false,
+  type: "object",
+  required: [],
+  properties: {
+    orderByField: {
+      type: "string",
+    },
+    order: {
+      type: "string",
+    },
+    limit: {
+      type: "string",
+    },
+    offset: {
+      type: "string",
+    },
+  },
+};
+
 const createCustomerSchema = {
   required: ["idCard", "firstNames", "lastNames", "email", "phoneNumber", "address"],
   additionalProperties: false,
@@ -24,4 +44,4 @@ const createCustomerSchema = {
   },
 };
 
-module.exports = { createCustomerSchema };
+module.exports = { createCustomerSchema, getCustomersSchema };

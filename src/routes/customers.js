@@ -1,10 +1,15 @@
 const { Router } = require("express");
 
-const { validateCreateCustomerSchema } = require("../middlewares/validateAJVSchema/customers");
-const { createCustomer } = require("../controllers/customers");
+const { createCustomer, getCustomers } = require("../controllers/customers");
+const { verifyToken } = require("../middlewares/authJwt");
+const {
+  validateCreateCustomerSchema,
+  validateGetCustomersSchema,
+} = require("../middlewares/validateAJVSchema/customers");
 
 const router = Router();
 
-router.post("/", validateCreateCustomerSchema, createCustomer);
+router.get("/", validateGetCustomersSchema, verifyToken, getCustomers);
+router.post("/", validateCreateCustomerSchema, verifyToken, createCustomer);
 
 module.exports = router;
