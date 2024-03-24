@@ -1,10 +1,15 @@
 const { Router } = require("express");
 
-const { validateCreateWarehouseSchema } = require("../middlewares/validateAJVSchema/warehouses");
-const { createWarehouse } = require("../controllers/warehouses");
+const { createWarehouse, getWarehouses } = require("../controllers/warehouses");
+const {
+  validateCreateWarehouseSchema,
+  validateGetWarehousesSchema,
+} = require("../middlewares/validateAJVSchema/warehouses");
+const { verifyToken } = require("../middlewares/authJwt");
 
 const router = Router();
 
-router.post("/", validateCreateWarehouseSchema, createWarehouse);
+router.get("/", validateGetWarehousesSchema, verifyToken, getWarehouses);
+router.post("/", validateCreateWarehouseSchema, verifyToken, createWarehouse);
 
 module.exports = router;

@@ -1,3 +1,23 @@
+const getWarehousesSchema = {
+  additionalProperties: false,
+  type: "object",
+  required: [],
+  properties: {
+    orderByField: {
+      type: "string",
+    },
+    order: {
+      type: "string",
+    },
+    limit: {
+      type: "string",
+    },
+    offset: {
+      type: "string",
+    },
+  },
+};
+
 const createWarehouseSchema = {
   required: ["name"],
   additionalProperties: false,
@@ -12,4 +32,4 @@ const createWarehouseSchema = {
   },
 };
 
-module.exports = { createWarehouseSchema };
+module.exports = { createWarehouseSchema, getWarehousesSchema };
