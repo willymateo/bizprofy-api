@@ -1,10 +1,15 @@
 const { Router } = require("express");
 
-const { validateCreateProviderSchema } = require("../middlewares/validateAJVSchema/providers");
-const { createProvider } = require("../controllers/providers");
+const { createProvider, getProviders } = require("../controllers/providers");
+const { verifyToken } = require("../middlewares/authJwt");
+const {
+  validateCreateProviderSchema,
+  validateGetProvidersSchema,
+} = require("../middlewares/validateAJVSchema/providers");
 
 const router = Router();
 
-router.post("/", validateCreateProviderSchema, createProvider);
+router.get("/", validateGetProvidersSchema, verifyToken, getProviders);
+router.post("/", validateCreateProviderSchema, verifyToken, createProvider);
 
 module.exports = router;

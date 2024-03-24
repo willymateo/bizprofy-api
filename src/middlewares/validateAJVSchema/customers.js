@@ -13,7 +13,7 @@ const validateCreateCustomerSchema = (req, res, next) => {
 const validateGetCustomersSchema = (req, res, next) => {
   req.ajv = {
     schema: getCustomersSchema,
-    data: req.body,
+    data: req.query,
   };
 
   validateAJVSchema(req, res, next);

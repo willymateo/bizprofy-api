@@ -1,4 +1,4 @@
-const { createProvidersSchema } = require("../../ajvSchemas/providers");
+const { createProvidersSchema, getProvidersSchema } = require("../../ajvSchemas/providers");
 const { validateAJVSchema } = require(".");
 
 const validateCreateProviderSchema = (req, res, next) => {
@@ -10,4 +10,13 @@ const validateCreateProviderSchema = (req, res, next) => {
   validateAJVSchema(req, res, next);
 };
 
-module.exports = { validateCreateProviderSchema };
+const validateGetProvidersSchema = (req, res, next) => {
+  req.ajv = {
+    schema: getProvidersSchema,
+    data: req.query,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
+module.exports = { validateCreateProviderSchema, validateGetProvidersSchema };

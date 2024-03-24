@@ -1,3 +1,23 @@
+const getProvidersSchema = {
+  additionalProperties: false,
+  type: "object",
+  required: [],
+  properties: {
+    orderByField: {
+      type: "string",
+    },
+    order: {
+      type: "string",
+    },
+    limit: {
+      type: "string",
+    },
+    offset: {
+      type: "string",
+    },
+  },
+};
+
 const createProvidersSchema = {
   required: ["firstNames", "lastNames", "email", "phoneNumber", "address"],
   additionalProperties: false,
@@ -24,4 +44,4 @@ const createProvidersSchema = {
   },
 };
 
-module.exports = { createProvidersSchema };
+module.exports = { createProvidersSchema, getProvidersSchema };
