@@ -22,6 +22,7 @@ const getCustomers = async (req, res, next) => {
 
 const createCustomer = async (req, res, next) => {
   try {
+    const email = req.body.email || null;
     const {
       company: { id: companyId },
     } = req.auth;
@@ -29,6 +30,7 @@ const createCustomer = async (req, res, next) => {
     const newCustomerInstance = Customers.build({
       ...req.body,
       companyId,
+      email,
     });
 
     // Validate data
