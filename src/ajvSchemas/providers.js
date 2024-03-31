@@ -3,6 +3,9 @@ const getProvidersSchema = {
   type: "object",
   required: [],
   properties: {
+    q: {
+      type: "string",
+    },
     orderByField: {
       type: "string",
     },

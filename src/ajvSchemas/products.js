@@ -32,7 +32,7 @@ const getProductsSchema = {
 const createProductSchema = {
   additionalProperties: false,
   type: "object",
-  required: ["productCategoryId", "providerId", "name", "unitCost", "unitPrice"],
+  required: ["name", "unitCost", "unitPrice"],
   properties: {
     productCategoryId: {
       type: "string",
@@ -58,4 +58,43 @@ const createProductSchema = {
   },
 };
 
-module.exports = { getProductsSchema, createProductSchema };
+const getProductCategoriesSchema = {
+  additionalProperties: false,
+  type: "object",
+  required: [],
+  properties: {
+    orderByField: {
+      type: "string",
+    },
+    order: {
+      type: "string",
+    },
+    limit: {
+      type: "string",
+    },
+    offset: {
+      type: "string",
+    },
+    q: {
+      type: "string",
+    },
+  },
+};
+
+const createProductCategorySchema = {
+  required: ["name"],
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+    },
+  },
+};
+
+module.exports = {
+  getProductsSchema,
+  createProductSchema,
+  getProductCategoriesSchema,
+  createProductCategorySchema,
+};
