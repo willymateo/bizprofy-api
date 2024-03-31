@@ -1,12 +1,12 @@
 const { Op } = require("sequelize");
 
 const { Warehouses } = require("../db/models/warehouses");
-const { StockTypes } = require("../db/models/stockTypes");
+const { Providers } = require("../db/models/providers");
 const { Products } = require("../db/models/products");
-const { Stock } = require("../db/models/stock");
+const { StockIn } = require("../db/models/stockIn");
 const { ORDER } = require("../constants");
 
-const getStock = async (req, res, next) => {
+const getStockIn = async (req, res, next) => {
   try {
     const { company } = req.decodedToken;
     const {
@@ -16,19 +16,18 @@ const getStock = async (req, res, next) => {
       orderByField = "transactionDate",
       quantityLessThanOrEqualTo,
       order = ORDER.DESC,
-      stockTypeIds = "",
       productIds = "",
       limit = 50,
       offset = 0,
     } = req.query;
 
-    const bdResult = await Stock.findAndCountAll({
+    const bdResult = await StockIn.findAndCountAll({
       include: [
         { model: Products, as: "product", where: { companyId: company.id } },
-        { model: StockTypes, as: "stockType" },
         { model: Warehouses, as: "warehouse" },
+        { model: Providers, as: "provider" },
       ],
-      attributes: { exclude: ["stockTypeId", "productId"] },
+      attributes: { exclude: ["productId"] },
       where: {
         ...((quantityLessThanOrEqualTo || quantityGreaterThanOrEqualTo) && {
           quantity: {
@@ -50,11 +49,6 @@ const getStock = async (req, res, next) => {
             }),
           },
         }),
-        ...(stockTypeIds && {
-          stockTypeId: {
-            [Op.in]: stockTypeIds.split(","),
-          },
-        }),
         ...(productIds && {
           productId: {
             [Op.in]: productIds.split(","),
@@ -72,7 +66,7 @@ const getStock = async (req, res, next) => {
   }
 };
 
-const createStock = async (req, res, next) => {
+const createStockIn = async (req, res, next) => {
   try {
     const { company } = req.decodedToken;
     const { productId = "" } = req.body;
@@ -85,7 +79,7 @@ const createStock = async (req, res, next) => {
       return res.status(400).json({ message: "Product not found" });
     }
 
-    const newStockInstance = Stock.build(req.body);
+    const newStockInstance = StockIn.build(req.body);
 
     // Validate data
     await newStockInstance.validate();
@@ -99,4 +93,4 @@ const createStock = async (req, res, next) => {
   }
 };
 
-module.exports = { getStock, createStock };
+module.exports = { getStockIn, createStockIn };

@@ -3,7 +3,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "stock",
+      "stock_in",
       {
         id: {
           type: Sequelize.UUID,
@@ -11,16 +11,6 @@ module.exports = {
           allowNull: false,
           primaryKey: true,
           unique: true,
-        },
-        stock_type_id: {
-          type: Sequelize.SMALLINT,
-          allowNull: false,
-          references: {
-            model: "stock_types", // Table name.
-            key: "id",
-          },
-          onDelete: "RESTRICT",
-          onUpdate: "CASCADE",
         },
         product_id: {
           type: Sequelize.UUID,
@@ -37,6 +27,16 @@ module.exports = {
           allowNull: false,
           references: {
             model: "warehouses", // Table name.
+            key: "id",
+          },
+          onDelete: "RESTRICT",
+          onUpdate: "CASCADE",
+        },
+        provider_id: {
+          type: Sequelize.UUID,
+          allowNull: false,
+          references: {
+            model: "provider_id", // Table name.
             key: "id",
           },
           onDelete: "RESTRICT",
@@ -72,11 +72,11 @@ module.exports = {
         },
       },
       {
-        comment: "Product stock",
+        comment: "Product stock in",
       },
     );
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("stock");
+    await queryInterface.dropTable("stock_in");
   },
 };

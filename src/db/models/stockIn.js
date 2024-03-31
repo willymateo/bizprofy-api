@@ -4,12 +4,12 @@ const { DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 
 const { sequelize } = require("../connection");
-const { StockTypes } = require("./stockTypes");
 const { Warehouses } = require("./warehouses");
+const { Providers } = require("./providers");
 const { Products } = require("./products");
 
-const Stock = sequelize.define(
-  "Stock",
+const StockIn = sequelize.define(
+  "StockIn",
   {
     id: {
       type: DataTypes.UUIDV4,
@@ -21,10 +21,6 @@ const Stock = sequelize.define(
         isUUID: 4,
       },
     },
-    stockTypeId: {
-      type: DataTypes.SMALLINT,
-      allowNull: false,
-    },
     productId: {
       type: DataTypes.UUIDV4,
       allowNull: false,
@@ -33,6 +29,10 @@ const Stock = sequelize.define(
       type: DataTypes.UUIDV4,
       allowNull: false,
     },
+    providerId: {
+      type: DataTypes.UUIDV4,
+      allowNull: true,
+    },
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -40,6 +40,14 @@ const Stock = sequelize.define(
       validate: {
         isInt: true,
         min: 0,
+      },
+    },
+    unitCost: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        isDecimal: true,
       },
     },
     transactionDate: {
@@ -52,41 +60,41 @@ const Stock = sequelize.define(
     paranoid: true,
     timestamps: true,
     underscored: true,
-    tableName: "stock",
+    tableName: "stock_in",
   },
 );
 
-Stock.belongsTo(StockTypes, {
-  foreignKey: "stockTypeId",
-  as: "stockType",
-});
-
-StockTypes.hasMany(Stock, {
-  foreignKey: "stockTypeId",
-  onDelete: "RESTRICT",
-  onUpdate: "CASCADE",
-});
-
-Stock.belongsTo(Products, {
+StockIn.belongsTo(Products, {
   foreignKey: "productId",
   as: "product",
 });
 
-Products.hasMany(Stock, {
+Products.hasMany(StockIn, {
   foreignKey: "productId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
 });
 
-Stock.belongsTo(Warehouses, {
+StockIn.belongsTo(Warehouses, {
   foreignKey: "warehouseId",
   as: "warehouse",
 });
 
-Warehouses.hasMany(Stock, {
+Warehouses.hasMany(StockIn, {
   foreignKey: "warehouseId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
 });
 
-module.exports = { Stock };
+StockIn.belongsTo(Providers, {
+  foreignKey: "providerId",
+  as: "provider",
+});
+
+Providers.hasMany(StockIn, {
+  foreignKey: "providerId",
+  onDelete: "RESTRICT",
+  onUpdate: "CASCADE",
+});
+
+module.exports = { StockIn };

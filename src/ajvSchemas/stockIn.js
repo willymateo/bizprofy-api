@@ -1,4 +1,4 @@
-const getStockSquema = {
+const getStockInSquema = {
   additionalProperties: false,
   type: "object",
   properties: {
@@ -26,23 +26,17 @@ const getStockSquema = {
     orderByField: {
       type: "string",
     },
-    stockTypeIds: {
-      type: "string",
-    },
     productIds: {
       type: "string",
     },
   },
 };
 
-const createStockSquema = {
+const createStockInSquema = {
   additionalProperties: false,
   type: "object",
-  required: ["stockTypeId", "warehouseId", "productId", "quantity"],
+  required: ["warehouseId", "productId", "quantity"],
   properties: {
-    stockTypeId: {
-      type: "number",
-    },
     warehouseId: {
       type: "string",
     },
@@ -58,4 +52,4 @@ const createStockSquema = {
   },
 };
 
-module.exports = { getStockSquema, createStockSquema };
+module.exports = { getStockInSquema, createStockInSquema };
