@@ -1,12 +1,12 @@
 const { Op } = require("sequelize");
 
-const { Warehouses } = require("../db/models/warehouses");
-const { Providers } = require("../db/models/providers");
-const { Products } = require("../db/models/products");
-const { StockOut } = require("../db/models/stockOut");
-const { ORDER } = require("../constants");
+const { Warehouses } = require("../../db/models/warehouses");
+const { Providers } = require("../../db/models/providers");
+const { Products } = require("../../db/models/products");
+const { StockIn } = require("../../db/models/stockIn");
+const { ORDER } = require("../../constants");
 
-const getStockOut = async (req, res, next) => {
+const getStockIn = async (req, res, next) => {
   try {
     const { company } = req.decodedToken;
     const {
@@ -21,11 +21,15 @@ const getStockOut = async (req, res, next) => {
       offset = 0,
     } = req.query;
 
-    const bdResult = await StockOut.findAndCountAll({
+    const bdResult = await StockIn.findAndCountAll({
       include: [
-        { model: Products, as: "product", where: { companyId: company.id } },
+        {
+          include: [{ model: Providers, as: "provider" }],
+          where: { companyId: company.id },
+          model: Products,
+          as: "product",
+        },
         { model: Warehouses, as: "warehouse" },
-        { model: Providers, as: "provider" },
       ],
       attributes: { exclude: ["productId"] },
       where: {
@@ -66,15 +70,15 @@ const getStockOut = async (req, res, next) => {
   }
 };
 
-const createStockOut = async (req, res, next) => {
+const createStockIn = async (req, res, next) => {
   try {
-    const newStockOutInstance = StockOut.build(req.body);
+    const newStockInInstance = StockIn.build(req.body);
 
     // Validate data
-    await newStockOutInstance.validate();
+    await newStockInInstance.validate();
 
     // Save the registers in the DB
-    const newStock = await newStockOutInstance.save();
+    const newStock = await newStockInInstance.save();
 
     res.status(201).json(newStock);
   } catch (error) {
@@ -82,4 +86,4 @@ const createStockOut = async (req, res, next) => {
   }
 };
 
-module.exports = { getStockOut, createStockOut };
+module.exports = { getStockIn, createStockIn };

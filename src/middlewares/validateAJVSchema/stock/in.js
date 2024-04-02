@@ -1,5 +1,5 @@
-const { createStockInSchema, getStockInSchema } = require("../../ajvSchemas/stockIn");
-const { validateAJVSchema } = require(".");
+const { createStockInSchema, getStockInSchema } = require("../../../ajvSchemas/stock/in");
+const { validateAJVSchema } = require("..");
 
 const validateCreateStockInSchema = (req, res, next) => {
   req.ajv = {

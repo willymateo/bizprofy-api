@@ -1,11 +1,11 @@
 const { Router } = require("express");
 
-const { getStockOut, createStockOut } = require("../controllers/stockOut");
-const { verifyToken } = require("../middlewares/authJwt");
+const { getStockOut, createStockOut } = require("../../controllers/stock/out");
+const { verifyToken } = require("../../middlewares/authJwt");
 const {
   validateCreateStockOutSchema,
   validateGetStockOutSchema,
-} = require("../middlewares/validateAJVSchema/stockOut");
+} = require("../../middlewares/validateAJVSchema/stock/out");
 
 const router = Router();
 
