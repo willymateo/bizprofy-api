@@ -23,9 +23,13 @@ const getStockIn = async (req, res, next) => {
 
     const bdResult = await StockIn.findAndCountAll({
       include: [
-        { model: Products, as: "product", where: { companyId: company.id } },
+        {
+          include: [{ model: Providers, as: "provider" }],
+          where: { companyId: company.id },
+          model: Products,
+          as: "product",
+        },
         { model: Warehouses, as: "warehouse" },
-        { model: Providers, as: "provider" },
       ],
       attributes: { exclude: ["productId"] },
       where: {

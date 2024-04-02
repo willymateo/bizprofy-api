@@ -32,11 +32,11 @@ module.exports = {
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
         },
-        provider_id: {
+        customer_id: {
           type: Sequelize.UUID,
-          allowNull: true,
+          allowNull: false,
           references: {
-            model: "provider_id", // Table name.
+            model: "customers", // Table name.
             key: "id",
           },
           onDelete: "RESTRICT",

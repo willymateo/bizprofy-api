@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+
 const { Warehouses } = require("../db/models/warehouses");
 const { ORDER } = require("../constants");
 

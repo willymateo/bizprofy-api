@@ -43,9 +43,6 @@ const createStockInSchema = {
     warehouseId: {
       type: "string",
     },
-    providerId: {
-      type: "string",
-    },
     quantity: {
       type: "number",
     },

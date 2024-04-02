@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require("uuid");
 
 const { sequelize } = require("../connection");
 const { Warehouses } = require("./warehouses");
-const { Providers } = require("./providers");
 const { Products } = require("./products");
 
 const StockIn = sequelize.define(
@@ -28,10 +27,6 @@ const StockIn = sequelize.define(
     warehouseId: {
       type: DataTypes.UUIDV4,
       allowNull: false,
-    },
-    providerId: {
-      type: DataTypes.UUIDV4,
-      allowNull: true,
     },
     quantity: {
       type: DataTypes.INTEGER,
@@ -82,17 +77,6 @@ StockIn.belongsTo(Warehouses, {
 
 Warehouses.hasMany(StockIn, {
   foreignKey: "warehouseId",
-  onDelete: "RESTRICT",
-  onUpdate: "CASCADE",
-});
-
-StockIn.belongsTo(Providers, {
-  foreignKey: "providerId",
-  as: "provider",
-});
-
-Providers.hasMany(StockIn, {
-  foreignKey: "providerId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
 });

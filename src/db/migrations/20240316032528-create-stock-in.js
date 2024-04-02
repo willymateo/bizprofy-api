@@ -32,16 +32,6 @@ module.exports = {
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
         },
-        provider_id: {
-          type: Sequelize.UUID,
-          allowNull: true,
-          references: {
-            model: "provider_id", // Table name.
-            key: "id",
-          },
-          onDelete: "RESTRICT",
-          onUpdate: "CASCADE",
-        },
         quantity: {
           type: Sequelize.INTEGER,
           allowNull: false,
