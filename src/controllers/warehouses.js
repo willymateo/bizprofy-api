@@ -3,11 +3,33 @@ const { ORDER } = require("../constants");
 
 const getWarehouses = async (req, res, next) => {
   try {
-    const { orderByField = "createdAt", order = ORDER.DESC, limit = 50, offset = 0 } = req.query;
+    const {
+      orderByField = "createdAt",
+      order = ORDER.DESC,
+      limit = 50,
+      offset = 0,
+      q = "",
+    } = req.query;
     const { company } = req.decodedToken;
 
     const bdResult = await Warehouses.findAndCountAll({
-      where: { companyId: company.id },
+      where: {
+        companyId: company.id,
+        ...(q && {
+          [Op.or]: [
+            {
+              name: {
+                [Op.iLike]: `%${q}%`,
+              },
+            },
+            {
+              code: {
+                [Op.iLike]: `%${q}%`,
+              },
+            },
+          ],
+        }),
+      },
       paranoid: false,
       offset,
       limit,

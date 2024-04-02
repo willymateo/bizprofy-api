@@ -15,6 +15,9 @@ const getWarehousesSchema = {
     offset: {
       type: "string",
     },
+    q: {
+      type: "string",
+    },
   },
 };
 
