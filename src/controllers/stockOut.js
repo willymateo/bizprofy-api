@@ -3,10 +3,10 @@ const { Op } = require("sequelize");
 const { Warehouses } = require("../db/models/warehouses");
 const { Providers } = require("../db/models/providers");
 const { Products } = require("../db/models/products");
-const { StockIn } = require("../db/models/stockIn");
+const { StockOut } = require("../db/models/stockOut");
 const { ORDER } = require("../constants");
 
-const getStockIn = async (req, res, next) => {
+const getStockOut = async (req, res, next) => {
   try {
     const { company } = req.decodedToken;
     const {
@@ -21,7 +21,7 @@ const getStockIn = async (req, res, next) => {
       offset = 0,
     } = req.query;
 
-    const bdResult = await StockIn.findAndCountAll({
+    const bdResult = await StockOut.findAndCountAll({
       include: [
         { model: Products, as: "product", where: { companyId: company.id } },
         { model: Warehouses, as: "warehouse" },
@@ -66,15 +66,15 @@ const getStockIn = async (req, res, next) => {
   }
 };
 
-const createStockIn = async (req, res, next) => {
+const createStockOut = async (req, res, next) => {
   try {
-    const newStockInInstance = StockIn.build(req.body);
+    const newStockOutInstance = StockOut.build(req.body);
 
     // Validate data
-    await newStockInInstance.validate();
+    await newStockOutInstance.validate();
 
     // Save the registers in the DB
-    const newStock = await newStockInInstance.save();
+    const newStock = await newStockOutInstance.save();
 
     res.status(201).json(newStock);
   } catch (error) {
@@ -82,4 +82,4 @@ const createStockIn = async (req, res, next) => {
   }
 };
 
-module.exports = { getStockIn, createStockIn };
+module.exports = { getStockOut, createStockOut };

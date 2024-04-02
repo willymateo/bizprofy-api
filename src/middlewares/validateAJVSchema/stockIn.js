@@ -1,9 +1,9 @@
-const { createStockInSquema, getStockInSquema } = require("../../ajvSchemas/stockIn");
+const { createStockInSchema, getStockInSchema } = require("../../ajvSchemas/stockIn");
 const { validateAJVSchema } = require(".");
 
 const validateCreateStockInSchema = (req, res, next) => {
   req.ajv = {
-    schema: createStockInSquema,
+    schema: createStockInSchema,
     data: req.body,
   };
 
@@ -12,7 +12,7 @@ const validateCreateStockInSchema = (req, res, next) => {
 
 const validateGetStockInSchema = (req, res, next) => {
   req.ajv = {
-    schema: getStockInSquema,
+    schema: getStockInSchema,
     data: req.query,
   };
 

@@ -3,7 +3,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "stock_in",
+      "stock_out",
       {
         id: {
           type: Sequelize.UUID,
@@ -47,7 +47,7 @@ module.exports = {
           allowNull: false,
           defaultValue: 0,
         },
-        unit_cost: {
+        unit_price: {
           type: Sequelize.DOUBLE,
           allowNull: false,
           defaultValue: 0,
@@ -77,11 +77,11 @@ module.exports = {
         },
       },
       {
-        comment: "Product stock in",
+        comment: "Product stock out",
       },
     );
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("stock_in");
+    await queryInterface.dropTable("stock_out");
   },
 };

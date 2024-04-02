@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 
 const { BCRYPT_SALT_ROUNDS } = require("../config/app.config");
+const { Warehouses } = require("../db/models/warehouses");
 const { Companies } = require("../db/models/companies");
 const { Users } = require("../db/models/users");
 
@@ -46,6 +47,10 @@ const signUp = async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
     const newCompanyInstance = Companies.build({ name: companyName });
+    const newDefaultWarehouseInstance = Warehouses.build({
+      companyId: newCompanyInstance.id,
+      name: "Main",
+    });
     const newUserInstance = Users.build({
       ...newUserData,
       companyId: newCompanyInstance.id,
@@ -53,13 +58,19 @@ const signUp = async (req, res, next) => {
     });
 
     // Validate data
-    await Promise.all([newUserInstance.validate(), newCompanyInstance.validate()]);
+    await Promise.all([
+      newDefaultWarehouseInstance.validate(),
+      newCompanyInstance.validate(),
+      newUserInstance.validate(),
+    ]);
 
     // Save the registers in the DB
     const newCompany = await newCompanyInstance.save();
+    const newDefaultWarehouse = await newDefaultWarehouseInstance.save();
     const newUser = await newUserInstance.save();
 
     return res.status(201).json({
+      warehouse: newDefaultWarehouse,
       company: newCompany,
       user: newUser,
     });
