@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 
 const { Warehouses } = require("../../db/models/warehouses");
 const { Providers } = require("../../db/models/providers");
@@ -12,16 +12,47 @@ const getStockIn = async (req, res, next) => {
     const {
       transactionDateGreaterThanOrEqualTo,
       transactionDateLessThanOrEqualTo,
-      quantityGreaterThanOrEqualTo = 0,
       orderByField = "transactionDate",
-      quantityLessThanOrEqualTo,
       order = ORDER.DESC,
+      warehouseIds = "",
       productIds = "",
       limit = 50,
       offset = 0,
     } = req.query;
 
-    const bdResult = await StockIn.findAndCountAll({
+    const conditions = {
+      ...((transactionDateGreaterThanOrEqualTo || transactionDateLessThanOrEqualTo) && {
+        transactionDate: {
+          ...(transactionDateGreaterThanOrEqualTo && {
+            [sequelize.Op.gte]: transactionDateGreaterThanOrEqualTo,
+          }),
+          ...(transactionDateLessThanOrEqualTo && {
+            [sequelize.Op.lte]: transactionDateLessThanOrEqualTo,
+          }),
+        },
+      }),
+      ...(productIds && {
+        productId: {
+          [sequelize.Op.in]: productIds.split(","),
+        },
+      }),
+      ...(warehouseIds && {
+        warehouseId: {
+          [sequelize.Op.in]: warehouseIds.split(","),
+        },
+      }),
+    };
+
+    const [summarizedData] =
+      (await StockIn.findAll({
+        attributes: [
+          [sequelize.fn("sum", sequelize.col("quantity")), "totalQuantity"],
+          [sequelize.fn("sum", sequelize.literal("unit_cost * quantity")), "totalCostSum"],
+        ],
+        where: conditions,
+      })) ?? [];
+
+    const stockData = await StockIn.findAndCountAll({
       include: [
         {
           include: [{ model: Providers, as: "provider" }],
@@ -32,39 +63,16 @@ const getStockIn = async (req, res, next) => {
         { model: Warehouses, as: "warehouse" },
       ],
       attributes: { exclude: ["productId"] },
-      where: {
-        ...((quantityLessThanOrEqualTo || quantityGreaterThanOrEqualTo) && {
-          quantity: {
-            ...(quantityLessThanOrEqualTo && {
-              [Op.lte]: quantityLessThanOrEqualTo,
-            }),
-            ...(quantityGreaterThanOrEqualTo && {
-              [Op.gte]: quantityGreaterThanOrEqualTo,
-            }),
-          },
-        }),
-        ...((transactionDateGreaterThanOrEqualTo || transactionDateLessThanOrEqualTo) && {
-          transactionDate: {
-            ...(transactionDateGreaterThanOrEqualTo && {
-              [Op.gte]: transactionDateGreaterThanOrEqualTo,
-            }),
-            ...(transactionDateLessThanOrEqualTo && {
-              [Op.lte]: transactionDateLessThanOrEqualTo,
-            }),
-          },
-        }),
-        ...(productIds && {
-          productId: {
-            [Op.in]: productIds.split(","),
-          },
-        }),
-      },
+      where: conditions,
       offset,
       limit,
       order: [[orderByField, order]],
     });
 
-    res.status(200).json(bdResult);
+    res.status(200).json({
+      summarizedData,
+      ...stockData,
+    });
   } catch (error) {
     next(error);
   }

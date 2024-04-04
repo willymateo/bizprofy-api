@@ -12,9 +12,7 @@ const getCurrentStock = async (req, res, next) => {
     const {
       transactionDateGreaterThanOrEqualTo,
       transactionDateLessThanOrEqualTo,
-      quantityGreaterThanOrEqualTo = 0,
       orderByField = "transactionDate",
-      quantityLessThanOrEqualTo,
       order = ORDER.DESC,
       productIds = "",
       limit = 50,
@@ -33,16 +31,6 @@ const getCurrentStock = async (req, res, next) => {
       ],
       attributes: { exclude: ["productId"] },
       where: {
-        ...((quantityLessThanOrEqualTo || quantityGreaterThanOrEqualTo) && {
-          quantity: {
-            ...(quantityLessThanOrEqualTo && {
-              [Op.lte]: quantityLessThanOrEqualTo,
-            }),
-            ...(quantityGreaterThanOrEqualTo && {
-              [Op.gte]: quantityGreaterThanOrEqualTo,
-            }),
-          },
-        }),
         ...((transactionDateGreaterThanOrEqualTo || transactionDateLessThanOrEqualTo) && {
           transactionDate: {
             ...(transactionDateGreaterThanOrEqualTo && {

@@ -8,12 +8,6 @@ const getStockOutSchema = {
     transactionDateLessThanOrEqualTo: {
       type: "string",
     },
-    quantityGreaterThanOrEqualTo: {
-      type: "string",
-    },
-    quantityLessThanOrEqualTo: {
-      type: "string",
-    },
     order: {
       type: "string",
     },
@@ -27,6 +21,9 @@ const getStockOutSchema = {
       type: "string",
     },
     productIds: {
+      type: "string",
+    },
+    warehouseIds: {
       type: "string",
     },
   },

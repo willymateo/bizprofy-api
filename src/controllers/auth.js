@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, transaction } = require("sequelize");
 const bcrypt = require("bcrypt");
 
 const { BCRYPT_SALT_ROUNDS } = require("../config/app.config");
@@ -42,6 +42,8 @@ const login = async (req, res, next) => {
 };
 
 const signUp = async (req, res, next) => {
+  const t = await transaction();
+
   try {
     const { password = "", companyName = "", ...newUserData } = req.body;
     const passwordHash = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
@@ -49,6 +51,7 @@ const signUp = async (req, res, next) => {
     const newCompanyInstance = Companies.build({ name: companyName });
     const newDefaultWarehouseInstance = Warehouses.build({
       companyId: newCompanyInstance.id,
+      code: "MAIN",
       name: "Main",
     });
     const newUserInstance = Users.build({
@@ -65,9 +68,17 @@ const signUp = async (req, res, next) => {
     ]);
 
     // Save the registers in the DB
-    const newCompany = await newCompanyInstance.save();
-    const newDefaultWarehouse = await newDefaultWarehouseInstance.save();
-    const newUser = await newUserInstance.save();
+    const newCompany = await newCompanyInstance.save({
+      transaction: t,
+    });
+    const newDefaultWarehouse = await newDefaultWarehouseInstance.save({
+      transaction: t,
+    });
+    const newUser = await newUserInstance.save({
+      transaction: t,
+    });
+
+    await t.commit();
 
     return res.status(201).json({
       warehouse: newDefaultWarehouse,
@@ -76,6 +87,8 @@ const signUp = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+
+    await t.rollback();
   }
 };
 
