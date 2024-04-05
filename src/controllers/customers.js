@@ -14,34 +14,35 @@ const getCustomers = async (req, res, next) => {
       q = "",
     } = req.query;
 
-    const bdResult = await Customers.findAndCountAll({
-      where: {
-        companyId: company.id,
-        ...(q && {
-          [Op.or]: [
-            {
-              idCard: {
-                [Op.iLike]: `%${q}%`,
+    const bdResult =
+      (await Customers.findAndCountAll({
+        where: {
+          companyId: company.id,
+          ...(q && {
+            [Op.or]: [
+              {
+                idCard: {
+                  [Op.iLike]: `%${q}%`,
+                },
               },
-            },
-            {
-              firstNames: {
-                [Op.iLike]: `%${q}%`,
+              {
+                firstNames: {
+                  [Op.iLike]: `%${q}%`,
+                },
               },
-            },
-            {
-              lastNames: {
-                [Op.iLike]: `%${q}%`,
+              {
+                lastNames: {
+                  [Op.iLike]: `%${q}%`,
+                },
               },
-            },
-          ],
-        }),
-      },
-      paranoid: false,
-      offset,
-      limit,
-      order: [[orderByField, order]],
-    });
+            ],
+          }),
+        },
+        paranoid: false,
+        offset,
+        limit,
+        order: [[orderByField, order]],
+      })) ?? {};
 
     res.status(200).json(bdResult);
   } catch (err) {

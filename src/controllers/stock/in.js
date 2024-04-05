@@ -1,6 +1,5 @@
 const sequelize = require("sequelize");
 
-const { Warehouses } = require("../../db/models/warehouses");
 const { Providers } = require("../../db/models/providers");
 const { Products } = require("../../db/models/products");
 const { StockIn } = require("../../db/models/stockIn");
@@ -52,22 +51,22 @@ const getStockIn = async (req, res, next) => {
         where: conditions,
       })) ?? [];
 
-    const stockData = await StockIn.findAndCountAll({
-      include: [
-        {
-          include: [{ model: Providers, as: "provider" }],
-          where: { companyId: company.id },
-          model: Products,
-          as: "product",
-        },
-        { model: Warehouses, as: "warehouse" },
-      ],
-      attributes: { exclude: ["productId"] },
-      where: conditions,
-      offset,
-      limit,
-      order: [[orderByField, order]],
-    });
+    const stockData =
+      (await StockIn.findAndCountAll({
+        include: [
+          {
+            include: [{ model: Providers, as: "provider" }],
+            where: { companyId: company.id },
+            model: Products,
+            as: "product",
+          },
+        ],
+        attributes: { exclude: ["productId"] },
+        where: conditions,
+        offset,
+        limit,
+        order: [[orderByField, order]],
+      })) ?? {};
 
     res.status(200).json({
       summarizedData,

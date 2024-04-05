@@ -1,8 +1,10 @@
-const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 
-const { Warehouses } = require("../../db/models/warehouses");
+const { ProductCategories } = require("../../db/models/productCategories");
 const { Providers } = require("../../db/models/providers");
+const { Customers } = require("../../db/models/customers");
 const { Products } = require("../../db/models/products");
+const { StockOut } = require("../../db/models/stockOut");
 const { StockIn } = require("../../db/models/stockIn");
 const { ORDER } = require("../../constants");
 
@@ -14,45 +16,110 @@ const getCurrentStock = async (req, res, next) => {
       transactionDateLessThanOrEqualTo,
       orderByField = "transactionDate",
       order = ORDER.DESC,
+      warehouseIds = "",
       productIds = "",
       limit = 50,
       offset = 0,
     } = req.query;
 
-    const bdResult = await StockIn.findAndCountAll({
-      include: [
-        {
-          include: [{ model: Providers, as: "provider" }],
-          where: { companyId: company.id },
-          model: Products,
-          as: "product",
+    const productsData =
+      (await Products.findAndCountAll({
+        include: [
+          { model: ProductCategories, as: "productCategory" },
+          { model: Providers, as: "provider" },
+        ],
+        attributes: { exclude: ["providerId", "productCategoryId"] },
+        where: { companyId: company.id },
+        offset,
+        limit,
+        order: [["createdAt", order]],
+      })) ?? {};
+
+    const stockConditions = {
+      ...((transactionDateGreaterThanOrEqualTo || transactionDateLessThanOrEqualTo) && {
+        transactionDate: {
+          ...(transactionDateGreaterThanOrEqualTo && {
+            [sequelize.Op.gte]: transactionDateGreaterThanOrEqualTo,
+          }),
+          ...(transactionDateLessThanOrEqualTo && {
+            [sequelize.Op.lte]: transactionDateLessThanOrEqualTo,
+          }),
         },
-        { model: Warehouses, as: "warehouse" },
-      ],
-      attributes: { exclude: ["productId"] },
-      where: {
-        ...((transactionDateGreaterThanOrEqualTo || transactionDateLessThanOrEqualTo) && {
-          transactionDate: {
-            ...(transactionDateGreaterThanOrEqualTo && {
-              [Op.gte]: transactionDateGreaterThanOrEqualTo,
-            }),
-            ...(transactionDateLessThanOrEqualTo && {
-              [Op.lte]: transactionDateLessThanOrEqualTo,
-            }),
-          },
-        }),
-        ...(productIds && {
-          productId: {
-            [Op.in]: productIds.split(","),
-          },
-        }),
+      }),
+      ...(productIds && {
+        productId: {
+          [sequelize.Op.in]: productIds.split(","),
+        },
+      }),
+      ...(warehouseIds && {
+        warehouseId: {
+          [sequelize.Op.in]: warehouseIds.split(","),
+        },
+      }),
+      productId: {
+        [sequelize.Op.in]: productsData?.rows?.map(product => product.id) ?? [],
       },
-      offset,
-      limit,
-      order: [[orderByField, order]],
+    };
+
+    const stockInData =
+      (await StockIn.findAll({
+        where: stockConditions,
+        order: [[orderByField, order]],
+      })) ?? [];
+
+    const stockOutData =
+      (await StockOut.findAll({
+        include: [{ model: Customers, as: "customer" }],
+        attributes: { exclude: ["customerId"] },
+        where: stockConditions,
+        order: [[orderByField, order]],
+      })) ?? [];
+
+    const rows = productsData.rows.map(product => {
+      let purchasesNumber = 0;
+      let salesNumber = 0;
+      let totalPrice = 0;
+      let totalCost = 0;
+
+      const productStockIn = stockInData?.filter(stock => stock.productId === product.id) ?? [];
+      const productStockOut = stockOutData?.filter(stock => stock.productId === product.id) ?? [];
+
+      productStockIn.forEach(stock => {
+        purchasesNumber += stock.quantity;
+        totalCost += stock.unitCost * stock.quantity;
+      });
+
+      productStockOut.forEach(stock => {
+        salesNumber += stock.quantity;
+        totalPrice += stock.unitPrice * stock.quantity;
+      });
+
+      return {
+        purchasesNumber,
+        salesNumber,
+        totalPrice,
+        totalCost,
+        product,
+      };
     });
 
-    res.status(200).json(bdResult);
+    let totalPurchasesNumber = 0;
+    let totalSalesNumber = 0;
+    let totalPriceSum = 0;
+    let totalCostSum = 0;
+    let profit = 0;
+
+    res.status(200).json({
+      count: productsData.count,
+      summarizedData: {
+        totalPurchasesNumber,
+        totalSalesNumber,
+        totalPriceSum,
+        totalCostSum,
+        profit,
+      },
+      rows,
+    });
   } catch (error) {
     next(error);
   }

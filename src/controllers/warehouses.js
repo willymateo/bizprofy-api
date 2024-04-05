@@ -14,29 +14,30 @@ const getWarehouses = async (req, res, next) => {
     } = req.query;
     const { company } = req.decodedToken;
 
-    const bdResult = await Warehouses.findAndCountAll({
-      where: {
-        companyId: company.id,
-        ...(q && {
-          [Op.or]: [
-            {
-              name: {
-                [Op.iLike]: `%${q}%`,
+    const bdResult =
+      (await Warehouses.findAndCountAll({
+        where: {
+          companyId: company.id,
+          ...(q && {
+            [Op.or]: [
+              {
+                name: {
+                  [Op.iLike]: `%${q}%`,
+                },
               },
-            },
-            {
-              code: {
-                [Op.iLike]: `%${q}%`,
+              {
+                code: {
+                  [Op.iLike]: `%${q}%`,
+                },
               },
-            },
-          ],
-        }),
-      },
-      paranoid: false,
-      offset,
-      limit,
-      order: [[orderByField, order]],
-    });
+            ],
+          }),
+        },
+        paranoid: false,
+        offset,
+        limit,
+        order: [[orderByField, order]],
+      })) ?? {};
 
     res.status(200).json(bdResult);
   } catch (err) {

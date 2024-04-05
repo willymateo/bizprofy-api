@@ -19,58 +19,59 @@ const getProducts = async (req, res, next) => {
       q = "",
     } = req.query;
 
-    const bdResult = await Products.findAndCountAll({
-      include: [
-        { model: ProductCategories, as: "productCategory" },
-        { model: Providers, as: "provider" },
-      ],
-      attributes: { exclude: ["providerId", "productCategoryId"] },
-      where: {
-        companyId: company.id,
-        ...(q && {
-          [Op.or]: [
-            {
-              name: {
-                [Op.iLike]: `%${q}%`,
+    const bdResult =
+      (await Products.findAndCountAll({
+        include: [
+          { model: ProductCategories, as: "productCategory" },
+          { model: Providers, as: "provider" },
+        ],
+        attributes: { exclude: ["providerId", "productCategoryId"] },
+        where: {
+          companyId: company.id,
+          ...(q && {
+            [Op.or]: [
+              {
+                name: {
+                  [Op.iLike]: `%${q}%`,
+                },
               },
-            },
-            {
-              code: {
-                [Op.iLike]: `%${q}%`,
+              {
+                code: {
+                  [Op.iLike]: `%${q}%`,
+                },
               },
-            },
-            {
-              description: {
-                [Op.iLike]: `%${q}%`,
+              {
+                description: {
+                  [Op.iLike]: `%${q}%`,
+                },
               },
+            ],
+          }),
+          ...((unitPriceLessThanOrEqualTo || unitPriceGreaterThanOrEqualTo) && {
+            unitPrice: {
+              ...(unitPriceLessThanOrEqualTo && {
+                [Op.lte]: unitPriceLessThanOrEqualTo,
+              }),
+              ...(unitPriceGreaterThanOrEqualTo && {
+                [Op.gte]: unitPriceGreaterThanOrEqualTo,
+              }),
             },
-          ],
-        }),
-        ...((unitPriceLessThanOrEqualTo || unitPriceGreaterThanOrEqualTo) && {
-          unitPrice: {
-            ...(unitPriceLessThanOrEqualTo && {
-              [Op.lte]: unitPriceLessThanOrEqualTo,
-            }),
-            ...(unitPriceGreaterThanOrEqualTo && {
-              [Op.gte]: unitPriceGreaterThanOrEqualTo,
-            }),
-          },
-        }),
-        ...((unitCostLessThanOrEqualTo || unitCostGreaterThanOrEqualTo) && {
-          unitCost: {
-            ...(unitCostLessThanOrEqualTo && {
-              [Op.lte]: unitCostLessThanOrEqualTo,
-            }),
-            ...(unitCostGreaterThanOrEqualTo && {
-              [Op.gte]: unitCostGreaterThanOrEqualTo,
-            }),
-          },
-        }),
-      },
-      offset,
-      limit,
-      order: [["createdAt", order]],
-    });
+          }),
+          ...((unitCostLessThanOrEqualTo || unitCostGreaterThanOrEqualTo) && {
+            unitCost: {
+              ...(unitCostLessThanOrEqualTo && {
+                [Op.lte]: unitCostLessThanOrEqualTo,
+              }),
+              ...(unitCostGreaterThanOrEqualTo && {
+                [Op.gte]: unitCostGreaterThanOrEqualTo,
+              }),
+            },
+          }),
+        },
+        offset,
+        limit,
+        order: [["createdAt", order]],
+      })) ?? {};
 
     res.status(200).json(bdResult);
   } catch (error) {

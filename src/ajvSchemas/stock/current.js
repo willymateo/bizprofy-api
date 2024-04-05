@@ -23,6 +23,9 @@ const getCurrentStockSchema = {
     productIds: {
       type: "string",
     },
+    warehouseIds: {
+      type: "string",
+    },
   },
 };
 
