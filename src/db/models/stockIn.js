@@ -45,6 +45,15 @@ const StockIn = sequelize.define(
         isDecimal: true,
       },
     },
+    currentStockAtMoment: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        isInt: true,
+        min: 0,
+      },
+    },
     transactionDate: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

@@ -1,9 +1,10 @@
-const { Op, transaction } = require("sequelize");
+const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 
 const { BCRYPT_SALT_ROUNDS } = require("../config/app.config");
 const { Warehouses } = require("../db/models/warehouses");
 const { Companies } = require("../db/models/companies");
+const { sequelize } = require("../db/connection");
 const { Users } = require("../db/models/users");
 
 const login = async (req, res, next) => {
@@ -42,7 +43,7 @@ const login = async (req, res, next) => {
 };
 
 const signUp = async (req, res, next) => {
-  const t = await transaction();
+  const t = await sequelize.transaction();
 
   try {
     const { password = "", companyName = "", ...newUserData } = req.body;
@@ -86,9 +87,9 @@ const signUp = async (req, res, next) => {
       user: newUser,
     });
   } catch (err) {
-    next(err);
-
     await t.rollback();
+
+    next(err);
   }
 };
 

@@ -1,8 +1,8 @@
 const sequelize = require("sequelize");
 
 const { ProductCategories } = require("../../db/models/productCategories");
+const { CurrentStock } = require("../../db/models/currentStock");
 const { Providers } = require("../../db/models/providers");
-const { Customers } = require("../../db/models/customers");
 const { Products } = require("../../db/models/products");
 const { StockOut } = require("../../db/models/stockOut");
 const { StockIn } = require("../../db/models/stockIn");
@@ -69,8 +69,6 @@ const getCurrentStock = async (req, res, next) => {
 
     const stockOutData =
       (await StockOut.findAll({
-        include: [{ model: Customers, as: "customer" }],
-        attributes: { exclude: ["customerId"] },
         where: stockConditions,
         order: [[orderByField, order]],
       })) ?? [];
@@ -83,6 +81,10 @@ const getCurrentStock = async (req, res, next) => {
 
       const productStockIn = stockInData?.filter(stock => stock.productId === product.id) ?? [];
       const productStockOut = stockOutData?.filter(stock => stock.productId === product.id) ?? [];
+
+      // const currentStock = await CurrentStock.findOne({
+      // where: { productId: product.id },
+      // });
 
       productStockIn.forEach(stock => {
         purchasesNumber += stock.quantity;

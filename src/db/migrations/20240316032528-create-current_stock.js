@@ -3,7 +3,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "stock_out",
+      "current_stock",
       {
         id: {
           type: Sequelize.UUID,
@@ -32,35 +32,10 @@ module.exports = {
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
         },
-        customer_id: {
-          type: Sequelize.UUID,
-          allowNull: true,
-          references: {
-            model: "customers", // Table name.
-            key: "id",
-          },
-          onDelete: "RESTRICT",
-          onUpdate: "CASCADE",
-        },
         quantity: {
           type: Sequelize.INTEGER,
           allowNull: false,
           defaultValue: 0,
-        },
-        unit_price: {
-          type: Sequelize.DOUBLE,
-          allowNull: false,
-          defaultValue: 0,
-        },
-        current_stock_at_moment: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          defaultValue: 0,
-        },
-        transaction_date: {
-          type: Sequelize.DATE,
-          allowNull: false,
-          defaultValue: Sequelize.fn("NOW"),
         },
         createdAt: {
           field: "created_at",
@@ -82,11 +57,11 @@ module.exports = {
         },
       },
       {
-        comment: "Product stock out",
+        comment: "Product current stock",
       },
     );
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("stock_out");
+    await queryInterface.dropTable("current_stock");
   },
 };

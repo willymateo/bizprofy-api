@@ -42,6 +42,11 @@ module.exports = {
           allowNull: false,
           defaultValue: 0,
         },
+        current_stock_at_moment: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
         transaction_date: {
           type: Sequelize.DATE,
           allowNull: false,

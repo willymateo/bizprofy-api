@@ -5,11 +5,10 @@ const { v4: uuidv4 } = require("uuid");
 
 const { sequelize } = require("../connection");
 const { Warehouses } = require("./warehouses");
-const { Customers } = require("./customers");
 const { Products } = require("./products");
 
-const StockOut = sequelize.define(
-  "StockOut",
+const CurrentStock = sequelize.define(
+  "CurrentStock",
   {
     id: {
       type: DataTypes.UUIDV4,
@@ -29,10 +28,6 @@ const StockOut = sequelize.define(
       type: DataTypes.UUIDV4,
       allowNull: false,
     },
-    customerId: {
-      type: DataTypes.UUIDV4,
-      allowNull: true,
-    },
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -42,68 +37,35 @@ const StockOut = sequelize.define(
         min: 0,
       },
     },
-    unitPrice: {
-      type: DataTypes.DOUBLE,
-      allowNull: false,
-      defaultValue: 0,
-      validate: {
-        isDecimal: true,
-      },
-    },
-    currentStockAtMoment: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-      validate: {
-        isInt: true,
-        min: 0,
-      },
-    },
-    transactionDate: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-      allowNull: false,
-    },
   },
   {
     paranoid: true,
     timestamps: true,
     underscored: true,
-    tableName: "stock_out",
+    tableName: "current_stock",
   },
 );
 
-StockOut.belongsTo(Products, {
+CurrentStock.belongsTo(Products, {
   foreignKey: "productId",
   as: "product",
 });
 
-Products.hasMany(StockOut, {
+Products.hasMany(CurrentStock, {
   foreignKey: "productId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
 });
 
-StockOut.belongsTo(Warehouses, {
+CurrentStock.belongsTo(Warehouses, {
   foreignKey: "warehouseId",
   as: "warehouse",
 });
 
-Warehouses.hasMany(StockOut, {
+Warehouses.hasMany(CurrentStock, {
   foreignKey: "warehouseId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
 });
 
-StockOut.belongsTo(Customers, {
-  foreignKey: "customerId",
-  as: "customer",
-});
-
-Customers.hasMany(StockOut, {
-  foreignKey: "customerId",
-  onDelete: "RESTRICT",
-  onUpdate: "CASCADE",
-});
-
-module.exports = { StockOut };
+module.exports = { CurrentStock };
