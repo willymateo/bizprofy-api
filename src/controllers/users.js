@@ -10,13 +10,14 @@ const getUsers = async (req, res, next) => {
     const { orderByField = "createdAt", order = ORDER.DESC, limit = 50, offset = 0 } = req.query;
     const { company } = req.decodedToken;
 
-    const bdResult = await Users.findAndCountAll({
-      where: { companyId: company.id },
-      paranoid: false,
-      offset,
-      limit,
-      order: [[orderByField, order]],
-    });
+    const bdResult =
+      (await Users.findAndCountAll({
+        where: { companyId: company.id },
+        paranoid: false,
+        offset,
+        limit,
+        order: [[orderByField, order]],
+      })) ?? {};
 
     res.status(200).json(bdResult);
   } catch (err) {

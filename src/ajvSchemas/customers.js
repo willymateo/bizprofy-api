@@ -15,6 +15,9 @@ const getCustomersSchema = {
     offset: {
       type: "string",
     },
+    q: {
+      type: "string",
+    },
   },
 };
 

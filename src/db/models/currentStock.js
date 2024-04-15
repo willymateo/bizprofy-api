@@ -4,12 +4,11 @@ const { DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 
 const { sequelize } = require("../connection");
-const { StockTypes } = require("./stockTypes");
 const { Warehouses } = require("./warehouses");
 const { Products } = require("./products");
 
-const Stock = sequelize.define(
-  "Stock",
+const CurrentStock = sequelize.define(
+  "CurrentStock",
   {
     id: {
       type: DataTypes.UUIDV4,
@@ -20,10 +19,6 @@ const Stock = sequelize.define(
       validate: {
         isUUID: 4,
       },
-    },
-    stockTypeId: {
-      type: DataTypes.SMALLINT,
-      allowNull: false,
     },
     productId: {
       type: DataTypes.UUIDV4,
@@ -42,51 +37,35 @@ const Stock = sequelize.define(
         min: 0,
       },
     },
-    transactionDate: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-      allowNull: false,
-    },
   },
   {
     paranoid: true,
     timestamps: true,
     underscored: true,
-    tableName: "stock",
+    tableName: "current_stock",
   },
 );
 
-Stock.belongsTo(StockTypes, {
-  foreignKey: "stockTypeId",
-  as: "stockType",
-});
-
-StockTypes.hasMany(Stock, {
-  foreignKey: "stockTypeId",
-  onDelete: "RESTRICT",
-  onUpdate: "CASCADE",
-});
-
-Stock.belongsTo(Products, {
+CurrentStock.belongsTo(Products, {
   foreignKey: "productId",
   as: "product",
 });
 
-Products.hasMany(Stock, {
+Products.hasMany(CurrentStock, {
   foreignKey: "productId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
 });
 
-Stock.belongsTo(Warehouses, {
+CurrentStock.belongsTo(Warehouses, {
   foreignKey: "warehouseId",
   as: "warehouse",
 });
 
-Warehouses.hasMany(Stock, {
+Warehouses.hasMany(CurrentStock, {
   foreignKey: "warehouseId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
 });
 
-module.exports = { Stock };
+module.exports = { CurrentStock };

@@ -1,9 +1,11 @@
-const getWarehousesSchema = {
+const getCurrentStockSchema = {
   additionalProperties: false,
   type: "object",
-  required: [],
   properties: {
-    orderByField: {
+    transactionDateGreaterThanOrEqualTo: {
+      type: "string",
+    },
+    transactionDateLessThanOrEqualTo: {
       type: "string",
     },
     order: {
@@ -15,24 +17,16 @@ const getWarehousesSchema = {
     offset: {
       type: "string",
     },
-    q: {
+    orderByField: {
+      type: "string",
+    },
+    productIds: {
+      type: "string",
+    },
+    warehouseIds: {
       type: "string",
     },
   },
 };
 
-const createWarehouseSchema = {
-  required: ["name"],
-  additionalProperties: false,
-  type: "object",
-  properties: {
-    code: {
-      type: "string",
-    },
-    name: {
-      type: "string",
-    },
-  },
-};
-
-module.exports = { createWarehouseSchema, getWarehousesSchema };
+module.exports = { getCurrentStockSchema };

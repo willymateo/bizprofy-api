@@ -1,18 +1,48 @@
+const { Op } = require("sequelize");
+
 const { Customers } = require("../db/models/customers");
 const { ORDER } = require("../constants");
 
 const getCustomers = async (req, res, next) => {
   try {
-    const { orderByField = "createdAt", order = ORDER.DESC, limit = 50, offset = 0 } = req.query;
     const { company } = req.decodedToken;
+    const {
+      orderByField = "createdAt",
+      order = ORDER.DESC,
+      limit = 50,
+      offset = 0,
+      q = "",
+    } = req.query;
 
-    const bdResult = await Customers.findAndCountAll({
-      where: { companyId: company.id },
-      paranoid: false,
-      offset,
-      limit,
-      order: [[orderByField, order]],
-    });
+    const bdResult =
+      (await Customers.findAndCountAll({
+        where: {
+          companyId: company.id,
+          ...(q && {
+            [Op.or]: [
+              {
+                idCard: {
+                  [Op.iLike]: `%${q}%`,
+                },
+              },
+              {
+                firstNames: {
+                  [Op.iLike]: `%${q}%`,
+                },
+              },
+              {
+                lastNames: {
+                  [Op.iLike]: `%${q}%`,
+                },
+              },
+            ],
+          }),
+        },
+        paranoid: false,
+        offset,
+        limit,
+        order: [[orderByField, order]],
+      })) ?? {};
 
     res.status(200).json(bdResult);
   } catch (err) {
