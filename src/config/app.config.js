@@ -4,8 +4,9 @@ const Ajv = require("ajv");
 const ajv = new Ajv();
 addFormats(ajv, ["email", "url", "date-time", "date"]);
 
-const MORGAN_FORMAT =
-  "● [:date[iso]] [:remote-addr :remote-user] :method :url HTTP/:http-version :status :response-time ms - :res[content-length]\n";
+const MORGAN_FORMAT = `
+● [:date[iso]] [:remote-addr :remote-user] :method :url HTTP/:http-version :status :response-time ms - :res[content-length]
+===========================================================================================================================`;
 const BCRYPT_SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS);
 const USERNAME_REGEX = "^[a-z0-9_.]*[a-z]+[a-z0-9_.]*$";
 const NODE_ENV = process.env.NODE_ENV || "development";
