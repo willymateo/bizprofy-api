@@ -7,6 +7,8 @@ const { sequelize } = require("../connection");
 const { Warehouses } = require("./warehouses");
 const { Products } = require("./products");
 
+// delete the id, the new PK will be the combination of productId and warehouseId
+
 const CurrentStock = sequelize.define(
   "CurrentStock",
   {
@@ -66,6 +68,7 @@ Warehouses.hasMany(CurrentStock, {
   foreignKey: "warehouseId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
+  as: "currentStock",
 });
 
 module.exports = { CurrentStock };

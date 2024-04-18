@@ -77,6 +77,7 @@ Products.hasMany(StockIn, {
   foreignKey: "productId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
+  as: "stockIn",
 });
 
 StockIn.belongsTo(Warehouses, {
@@ -88,6 +89,7 @@ Warehouses.hasMany(StockIn, {
   foreignKey: "warehouseId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
+  as: "stockIn",
 });
 
 module.exports = { StockIn };
