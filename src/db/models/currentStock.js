@@ -1,7 +1,6 @@
 "use strict";
 
 const { DataTypes } = require("sequelize");
-const { v4: uuidv4 } = require("uuid");
 
 const { sequelize } = require("../connection");
 const { Warehouses } = require("./warehouses");
@@ -12,22 +11,14 @@ const { Products } = require("./products");
 const CurrentStock = sequelize.define(
   "CurrentStock",
   {
-    id: {
-      type: DataTypes.UUIDV4,
-      primaryKey: true,
-      unique: true,
-      allowNull: false,
-      defaultValue: () => uuidv4(),
-      validate: {
-        isUUID: 4,
-      },
-    },
     productId: {
       type: DataTypes.UUIDV4,
+      primaryKey: true,
       allowNull: false,
     },
     warehouseId: {
       type: DataTypes.UUIDV4,
+      primaryKey: true,
       allowNull: false,
     },
     quantity: {
