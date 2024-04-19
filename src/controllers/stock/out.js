@@ -128,7 +128,7 @@ const createStockOut = async (req, res, next) => {
     // Save the registers in the DB
     const newStock = await newStockOutInstance.save();
 
-    await productCurrentStock.increment("quantity", {
+    await productCurrentStock.decrement("quantity", {
       transaction: t,
       by: quantity,
     });
