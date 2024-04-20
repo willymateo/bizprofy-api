@@ -50,4 +50,32 @@ const createProvidersSchema = {
   },
 };
 
-module.exports = { createProvidersSchema, getProvidersSchema };
+const editProviderSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    idCard: {
+      type: "string",
+    },
+    companyName: {
+      type: "string",
+    },
+    firstNames: {
+      type: "string",
+    },
+    lastNames: {
+      type: "string",
+    },
+    email: {
+      type: "string",
+    },
+    phoneNumber: {
+      type: "string",
+    },
+    address: {
+      type: "string",
+    },
+  },
+};
+
+module.exports = { createProvidersSchema, getProvidersSchema, editProviderSchema };
