@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const { createProvider, getProviders } = require("../controllers/providers");
+const { createProvider, getProviders, getProviderById } = require("../controllers/providers");
 const { verifyToken } = require("../middlewares/authJwt");
 const {
   validateCreateProviderSchema,
@@ -9,6 +9,7 @@ const {
 
 const router = Router();
 
+router.get("/:id", verifyToken, getProviderById);
 router.get("/", validateGetProvidersSchema, verifyToken, getProviders);
 router.post("/", validateCreateProviderSchema, verifyToken, createProvider);
 

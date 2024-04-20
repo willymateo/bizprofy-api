@@ -3,6 +3,22 @@ const { Op } = require("sequelize");
 const { Providers } = require("../db/models/providers");
 const { ORDER } = require("../constants");
 
+const getProviderById = async (req, res, next) => {
+  try {
+    const { id = "" } = req.params;
+
+    const provider = await Providers.findByPk(id);
+
+    if (!provider) {
+      return res.status(404).json({ message: "Provider not found" });
+    }
+
+    res.status(200).json(provider);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getProviders = async (req, res, next) => {
   try {
     const { company } = req.decodedToken;
@@ -77,4 +93,4 @@ const createProvider = async (req, res, next) => {
   }
 };
 
-module.exports = { createProvider, getProviders };
+module.exports = { createProvider, getProviders, getProviderById };
