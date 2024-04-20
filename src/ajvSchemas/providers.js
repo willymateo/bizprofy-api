@@ -22,11 +22,14 @@ const getProvidersSchema = {
 };
 
 const createProvidersSchema = {
-  required: ["firstNames", "lastNames", "email", "phoneNumber", "address"],
+  required: ["companyName", "firstNames", "lastNames", "email", "phoneNumber", "address"],
   additionalProperties: false,
   type: "object",
   properties: {
     idCard: {
+      type: "string",
+    },
+    companyName: {
       type: "string",
     },
     firstNames: {

@@ -117,9 +117,17 @@ const createStockOut = async (req, res, next) => {
       throw new Error("There are no stock for this product in this warehouse");
     }
 
+    const currentStockAtMoment = productCurrentStock.quantity - quantity;
+
+    if (currentStockAtMoment < 0) {
+      throw new Error(
+        `There are only ${productCurrentStock.quantity} units in stock in this warehouse`,
+      );
+    }
+
     const newStockOutInstance = StockOut.build({
       ...req.body,
-      currentStockAtMoment: productCurrentStock.quantity - quantity,
+      currentStockAtMoment,
     });
 
     // Validate data
