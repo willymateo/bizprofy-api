@@ -47,4 +47,29 @@ const createCustomerSchema = {
   },
 };
 
-module.exports = { createCustomerSchema, getCustomersSchema };
+const editCustomerSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    idCard: {
+      type: "string",
+    },
+    firstNames: {
+      type: "string",
+    },
+    lastNames: {
+      type: "string",
+    },
+    email: {
+      type: "string",
+    },
+    phoneNumber: {
+      type: "string",
+    },
+    address: {
+      type: "string",
+    },
+  },
+};
+
+module.exports = { createCustomerSchema, getCustomersSchema, editCustomerSchema };
