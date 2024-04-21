@@ -28,6 +28,11 @@ module.exports = {
           allowNull: true,
           unique: "unique_provider_company_id_id_card",
         },
+        company_name: {
+          type: Sequelize.STRING,
+          defaultValue: "",
+          allowNull: false,
+        },
         first_names: {
           type: Sequelize.STRING,
           defaultValue: "",

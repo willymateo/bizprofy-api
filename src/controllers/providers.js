@@ -3,6 +3,22 @@ const { Op } = require("sequelize");
 const { Providers } = require("../db/models/providers");
 const { ORDER } = require("../constants");
 
+const getProviderById = async (req, res, next) => {
+  try {
+    const { id = "" } = req.params;
+
+    const provider = await Providers.findByPk(id);
+
+    if (!provider) {
+      return res.status(404).json({ error: { message: "Provider not found" } });
+    }
+
+    res.status(200).json(provider);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getProviders = async (req, res, next) => {
   try {
     const { company } = req.decodedToken;
@@ -77,4 +93,34 @@ const createProvider = async (req, res, next) => {
   }
 };
 
-module.exports = { createProvider, getProviders };
+const editProviderById = async (req, res, next) => {
+  try {
+    const idCard = req.body.idCard || null;
+    const email = req.body.email || null;
+    const { id = "" } = req.params;
+
+    const provider = await Providers.findByPk(id);
+
+    if (!provider) {
+      return res.status(404).json({ error: { message: "Provider not found" } });
+    }
+
+    provider.set({
+      ...req.body,
+      idCard,
+      email,
+    });
+
+    // Validate data
+    await provider.validate();
+
+    // Save the registers in the DB
+    const newProvider = await provider.save();
+
+    res.status(200).json(newProvider);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createProvider, getProviders, getProviderById, editProviderById };

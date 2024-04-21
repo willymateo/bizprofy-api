@@ -32,6 +32,14 @@ const Providers = sequelize.define(
         notEmpty: true,
       },
     },
+    companyName: {
+      type: DataTypes.STRING,
+      defaultValue: "",
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     firstNames: {
       type: DataTypes.STRING,
       defaultValue: "",

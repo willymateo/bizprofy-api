@@ -5,16 +5,10 @@ module.exports = {
     await queryInterface.createTable(
       "current_stock",
       {
-        id: {
-          type: Sequelize.UUID,
-          defaultValue: Sequelize.fn("gen_random_uuid"),
-          allowNull: false,
-          primaryKey: true,
-          unique: true,
-        },
         product_id: {
           type: Sequelize.UUID,
           allowNull: false,
+          primaryKey: true,
           references: {
             model: "products", // Table name.
             key: "id",
@@ -25,6 +19,7 @@ module.exports = {
         warehouse_id: {
           type: Sequelize.UUID,
           allowNull: false,
+          primaryKey: true,
           references: {
             model: "warehouses", // Table name.
             key: "id",
