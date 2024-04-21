@@ -102,10 +102,7 @@ const editCustomerById = async (req, res, next) => {
       return res.status(404).json({ error: { message: "Customer not found" } });
     }
 
-    customer.set({
-      ...req.body,
-      email,
-    });
+    customer.set({ ...req.body, email });
 
     // Validate data
     await customer.validate();

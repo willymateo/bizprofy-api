@@ -1,9 +1,18 @@
-const { createUserSchema, getUsersSchema } = require("../../ajvSchemas/users");
+const { createUserSchema, getUsersSchema, editUserSchema } = require("../../ajvSchemas/users");
 const { validateAJVSchema } = require(".");
 
 const validateCreateUserSchema = (req, res, next) => {
   req.ajv = {
     schema: createUserSchema,
+    data: req.body,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
+const validateEditUserSchema = (req, res, next) => {
+  req.ajv = {
+    schema: editUserSchema,
     data: req.body,
   };
 
@@ -18,4 +27,4 @@ const validateGetUsersSchema = (req, res, next) => {
 
   validateAJVSchema(req, res, next);
 };
-module.exports = { validateCreateUserSchema, validateGetUsersSchema };
+module.exports = { validateCreateUserSchema, validateGetUsersSchema, validateEditUserSchema };
