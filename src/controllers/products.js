@@ -108,6 +108,22 @@ const createProduct = async (req, res, next) => {
   }
 };
 
+const getProductCategoryById = async (req, res, next) => {
+  try {
+    const { id = "" } = req.params;
+
+    const productCategory = await ProductCategories.findByPk(id);
+
+    if (!productCategory) {
+      return res.status(404).json({ error: { message: "Product category not found" } });
+    }
+
+    res.status(200).json(productCategory);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getProductCategories = async (req, res, next) => {
   try {
     const { company } = req.decodedToken;
@@ -163,4 +179,35 @@ const createProductCategory = async (req, res, next) => {
   }
 };
 
-module.exports = { createProduct, getProducts, createProductCategory, getProductCategories };
+const editProductCategoryById = async (req, res, next) => {
+  try {
+    const { id = "" } = req.params;
+
+    const productCategory = await ProductCategories.findByPk(id);
+
+    if (!productCategory) {
+      return res.status(404).json({ error: { message: "Product category not found" } });
+    }
+
+    productCategory.set(req.body);
+
+    // Validate data
+    await productCategory.validate();
+
+    // Save the registers in the DB
+    const newProductCategory = await productCategory.save();
+
+    res.status(200).json(newProductCategory);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  editProductCategoryById,
+  getProductCategoryById,
+  createProductCategory,
+  getProductCategories,
+  createProduct,
+  getProducts,
+};

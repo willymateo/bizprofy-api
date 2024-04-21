@@ -5,6 +5,15 @@ const {
 } = require("../../ajvSchemas/warehouses");
 const { validateAJVSchema } = require(".");
 
+const validateGetWarehousesSchema = (req, res, next) => {
+  req.ajv = {
+    schema: getWarehousesSchema,
+    data: req.query,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
 const validateCreateWarehouseSchema = (req, res, next) => {
   req.ajv = {
     schema: createWarehouseSchema,
@@ -18,15 +27,6 @@ const validateEditWarehouseSchema = (req, res, next) => {
   req.ajv = {
     schema: editWarehouseSchema,
     data: req.body,
-  };
-
-  validateAJVSchema(req, res, next);
-};
-
-const validateGetWarehousesSchema = (req, res, next) => {
-  req.ajv = {
-    schema: getWarehousesSchema,
-    data: req.query,
   };
 
   validateAJVSchema(req, res, next);

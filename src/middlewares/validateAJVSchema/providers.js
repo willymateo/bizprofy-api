@@ -5,19 +5,19 @@ const {
   editProviderSchema,
 } = require("../../ajvSchemas/providers");
 
-const validateCreateProviderSchema = (req, res, next) => {
+const validateGetProvidersSchema = (req, res, next) => {
   req.ajv = {
-    schema: createProvidersSchema,
-    data: req.body,
+    schema: getProvidersSchema,
+    data: req.query,
   };
 
   validateAJVSchema(req, res, next);
 };
 
-const validateGetProvidersSchema = (req, res, next) => {
+const validateCreateProviderSchema = (req, res, next) => {
   req.ajv = {
-    schema: getProvidersSchema,
-    data: req.query,
+    schema: createProvidersSchema,
+    data: req.body,
   };
 
   validateAJVSchema(req, res, next);

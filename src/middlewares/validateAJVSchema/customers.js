@@ -5,6 +5,15 @@ const {
   editCustomerSchema,
 } = require("../../ajvSchemas/customers");
 
+const validateGetCustomersSchema = (req, res, next) => {
+  req.ajv = {
+    schema: getCustomersSchema,
+    data: req.query,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
 const validateCreateCustomerSchema = (req, res, next) => {
   req.ajv = {
     schema: createCustomerSchema,
@@ -18,15 +27,6 @@ const validateEditCustomerSchema = (req, res, next) => {
   req.ajv = {
     schema: editCustomerSchema,
     data: req.body,
-  };
-
-  validateAJVSchema(req, res, next);
-};
-
-const validateGetCustomersSchema = (req, res, next) => {
-  req.ajv = {
-    schema: getCustomersSchema,
-    data: req.query,
   };
 
   validateAJVSchema(req, res, next);
