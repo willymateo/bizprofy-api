@@ -35,4 +35,17 @@ const createWarehouseSchema = {
   },
 };
 
-module.exports = { createWarehouseSchema, getWarehousesSchema };
+const editWarehouseSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    code: {
+      type: "string",
+    },
+    name: {
+      type: "string",
+    },
+  },
+};
+
+module.exports = { createWarehouseSchema, getWarehousesSchema, editWarehouseSchema };

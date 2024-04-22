@@ -55,4 +55,34 @@ const createUserSchema = {
   },
 };
 
-module.exports = { createUserSchema, getUsersSchema };
+const editUserSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    username: {
+      type: "string",
+      minLength: USERNAME_MIN_LENGTH,
+      maxLength: USERNAME_MAX_LENGTH,
+      pattern: USERNAME_REGEX,
+    },
+    password: {
+      type: "string",
+    },
+    firstNames: {
+      type: "string",
+    },
+    lastNames: {
+      type: "string",
+    },
+    email: {
+      type: "string",
+      format: "email",
+    },
+    photoUrl: {
+      type: "string",
+      format: "url",
+    },
+  },
+};
+
+module.exports = { createUserSchema, getUsersSchema, editUserSchema };

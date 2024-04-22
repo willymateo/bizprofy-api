@@ -1,10 +1,12 @@
-const {
-  getProductsSchema,
-  createProductSchema,
-  getProductCategoriesSchema,
-  createProductCategorySchema,
-} = require("../../ajvSchemas/products");
 const { validateAJVSchema } = require(".");
+const {
+  createProductCategorySchema,
+  getProductCategoriesSchema,
+  editProductCategorySchema,
+  createProductSchema,
+  getProductsSchema,
+  editProductSchema,
+} = require("../../ajvSchemas/products");
 
 const validateGetProductSchema = (req, res, next) => {
   req.ajv = {
@@ -18,6 +20,15 @@ const validateGetProductSchema = (req, res, next) => {
 const validateCreateProductSchema = (req, res, next) => {
   req.ajv = {
     schema: createProductSchema,
+    data: req.body,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
+const validateEditProductSchema = (req, res, next) => {
+  req.ajv = {
+    schema: editProductSchema,
     data: req.body,
   };
 
@@ -42,9 +53,20 @@ const validateCreateProductCategorySchema = (req, res, next) => {
   validateAJVSchema(req, res, next);
 };
 
+const validateEditProductCategorySchema = (req, res, next) => {
+  req.ajv = {
+    schema: editProductCategorySchema,
+    data: req.body,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
 module.exports = {
-  validateGetProductSchema,
-  validateCreateProductSchema,
-  validateGetProductCategorySchema,
   validateCreateProductCategorySchema,
+  validateEditProductCategorySchema,
+  validateGetProductCategorySchema,
+  validateCreateProductSchema,
+  validateEditProductSchema,
+  validateGetProductSchema,
 };

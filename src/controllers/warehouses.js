@@ -3,6 +3,22 @@ const { Op } = require("sequelize");
 const { Warehouses } = require("../db/models/warehouses");
 const { ORDER } = require("../constants");
 
+const getWarehouseById = async (req, res, next) => {
+  try {
+    const { id = "" } = req.params;
+
+    const warehouse = await Warehouses.findByPk(id);
+
+    if (!warehouse) {
+      return res.status(404).json({ error: { message: "Warehouse not found" } });
+    }
+
+    res.status(200).json(warehouse);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getWarehouses = async (req, res, next) => {
   try {
     const {
@@ -70,4 +86,32 @@ const createWarehouse = async (req, res, next) => {
   }
 };
 
-module.exports = { createWarehouse, getWarehouses };
+const editWarehouseById = async (req, res, next) => {
+  try {
+    const code = req.body.code || null;
+    const { id = "" } = req.params;
+
+    const warehouse = await Warehouses.findByPk(id);
+
+    if (!warehouse) {
+      return res.status(404).json({ error: { message: "Warehouse not found" } });
+    }
+
+    warehouse.set({
+      ...req.body,
+      code,
+    });
+
+    // Validate data
+    await warehouse.validate();
+
+    // Save the registers in the DB
+    const newWarehouse = await warehouse.save();
+
+    res.status(201).json(newWarehouse);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createWarehouse, getWarehouses, getWarehouseById, editWarehouseById };

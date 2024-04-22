@@ -58,6 +58,34 @@ const createProductSchema = {
   },
 };
 
+const editProductSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    productCategoryId: {
+      type: "string",
+    },
+    providerId: {
+      type: "string",
+    },
+    code: {
+      type: "string",
+    },
+    name: {
+      type: "string",
+    },
+    description: {
+      type: "string",
+    },
+    unitCost: {
+      type: "number",
+    },
+    unitPrice: {
+      type: "number",
+    },
+  },
+};
+
 const getProductCategoriesSchema = {
   additionalProperties: false,
   type: "object",
@@ -92,9 +120,21 @@ const createProductCategorySchema = {
   },
 };
 
+const editProductCategorySchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+    },
+  },
+};
+
 module.exports = {
-  getProductsSchema,
-  createProductSchema,
-  getProductCategoriesSchema,
   createProductCategorySchema,
+  getProductCategoriesSchema,
+  editProductCategorySchema,
+  createProductSchema,
+  editProductSchema,
+  getProductsSchema,
 };
