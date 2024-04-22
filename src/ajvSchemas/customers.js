@@ -72,4 +72,22 @@ const editCustomerSchema = {
   },
 };
 
-module.exports = { createCustomerSchema, getCustomersSchema, editCustomerSchema };
+const customerActivationSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    activate: {
+      type: "boolean",
+    },
+    force: {
+      type: "boolean",
+    },
+  },
+};
+
+module.exports = {
+  customerActivationSchema,
+  createCustomerSchema,
+  getCustomersSchema,
+  editCustomerSchema,
+};

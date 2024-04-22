@@ -116,4 +116,35 @@ const editCustomerById = async (req, res, next) => {
   }
 };
 
-module.exports = { createCustomer, getCustomers, editCustomerById, getCustomerById };
+const manageCustomerActivationById = async (req, res, next) => {
+  try {
+    const { force = false, activate = true } = req.body;
+    const { id = "" } = req.params;
+
+    const customer = await Customers.findByPk(id, {
+      paranoid: false,
+    });
+
+    if (!customer) {
+      return res.status(404).json({ error: { message: "Customer not found" } });
+    }
+
+    if (activate) {
+      await customer.restore();
+    } else {
+      await customer.destroy({ force });
+    }
+
+    return res.status(200).send(customer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  manageCustomerActivationById,
+  editCustomerById,
+  getCustomerById,
+  createCustomer,
+  getCustomers,
+};
