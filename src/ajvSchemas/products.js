@@ -58,6 +58,34 @@ const createProductSchema = {
   },
 };
 
+const editProductSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    productCategoryId: {
+      type: "string",
+    },
+    providerId: {
+      type: "string",
+    },
+    code: {
+      type: "string",
+    },
+    name: {
+      type: "string",
+    },
+    description: {
+      type: "string",
+    },
+    unitCost: {
+      type: "number",
+    },
+    unitPrice: {
+      type: "number",
+    },
+  },
+};
+
 const getProductCategoriesSchema = {
   additionalProperties: false,
   type: "object",
@@ -107,5 +135,6 @@ module.exports = {
   getProductCategoriesSchema,
   editProductCategorySchema,
   createProductSchema,
+  editProductSchema,
   getProductsSchema,
 };

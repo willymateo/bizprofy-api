@@ -6,6 +6,7 @@ const {
   validateEditProductCategorySchema,
   validateGetProductCategorySchema,
   validateCreateProductSchema,
+  validateEditProductSchema,
   validateGetProductSchema,
 } = require("../middlewares/validateAJVSchema/products");
 const {
@@ -13,6 +14,8 @@ const {
   getProductCategoryById,
   createProductCategory,
   getProductCategories,
+  editProductById,
+  getProductById,
   createProduct,
   getProducts,
 } = require("../controllers/products");
@@ -29,6 +32,8 @@ router.patch(
 router.get("/categories", verifyToken, validateGetProductCategorySchema, getProductCategories);
 router.post("/categories", verifyToken, validateCreateProductCategorySchema, createProductCategory);
 
+router.get("/:id", verifyToken, getProductById);
+router.patch("/:id", validateEditProductSchema, verifyToken, editProductById);
 router.get("/", verifyToken, getProducts, validateGetProductSchema);
 router.post("/", validateCreateProductSchema, verifyToken, createProduct);
 
