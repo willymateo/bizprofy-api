@@ -1,4 +1,5 @@
 const {
+  warehouseActivationSchema,
   createWarehouseSchema,
   getWarehousesSchema,
   editWarehouseSchema,
@@ -32,7 +33,17 @@ const validateEditWarehouseSchema = (req, res, next) => {
   validateAJVSchema(req, res, next);
 };
 
+const validateWarehouseActivationSchema = (req, res, next) => {
+  req.ajv = {
+    schema: warehouseActivationSchema,
+    data: req.body,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
 module.exports = {
+  validateWarehouseActivationSchema,
   validateCreateWarehouseSchema,
   validateGetWarehousesSchema,
   validateEditWarehouseSchema,

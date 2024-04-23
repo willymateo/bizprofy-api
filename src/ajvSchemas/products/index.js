@@ -86,54 +86,21 @@ const editProductSchema = {
   },
 };
 
-const getProductCategoriesSchema = {
-  additionalProperties: false,
-  type: "object",
-  required: [],
-  properties: {
-    orderByField: {
-      type: "string",
-    },
-    order: {
-      type: "string",
-    },
-    limit: {
-      type: "string",
-    },
-    offset: {
-      type: "string",
-    },
-    q: {
-      type: "string",
-    },
-  },
-};
-
-const createProductCategorySchema = {
-  required: ["name"],
+const productActivationSchema = {
   additionalProperties: false,
   type: "object",
   properties: {
-    name: {
-      type: "string",
+    activate: {
+      type: "boolean",
     },
-  },
-};
-
-const editProductCategorySchema = {
-  additionalProperties: false,
-  type: "object",
-  properties: {
-    name: {
-      type: "string",
+    force: {
+      type: "boolean",
     },
   },
 };
 
 module.exports = {
-  createProductCategorySchema,
-  getProductCategoriesSchema,
-  editProductCategorySchema,
+  productActivationSchema,
   createProductSchema,
   editProductSchema,
   getProductsSchema,

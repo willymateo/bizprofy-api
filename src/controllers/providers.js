@@ -123,4 +123,35 @@ const editProviderById = async (req, res, next) => {
   }
 };
 
-module.exports = { createProvider, getProviders, getProviderById, editProviderById };
+const manageProviderActivationById = async (req, res, next) => {
+  try {
+    const { force = false, activate = true } = req.body;
+    const { id = "" } = req.params;
+
+    const provider = await Providers.findByPk(id, {
+      paranoid: false,
+    });
+
+    if (!provider) {
+      return res.status(404).json({ error: { message: "Provider not found" } });
+    }
+
+    if (activate) {
+      await provider.restore();
+    } else {
+      await provider.destroy({ force });
+    }
+
+    return res.status(200).send(provider);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  manageProviderActivationById,
+  editProviderById,
+  getProviderById,
+  createProvider,
+  getProviders,
+};

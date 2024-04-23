@@ -3,8 +3,8 @@ const { Router } = require("express");
 const { createToken } = require("../middlewares/authJwt");
 const { login, signUp } = require("../controllers/auth");
 const {
-  validateLoginSchema,
   validateSignUpSchema,
+  validateLoginSchema,
 } = require("../middlewares/validateAJVSchema/auth");
 
 const router = Router();

@@ -78,4 +78,22 @@ const editProviderSchema = {
   },
 };
 
-module.exports = { createProvidersSchema, getProvidersSchema, editProviderSchema };
+const providerActivationSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    activate: {
+      type: "boolean",
+    },
+    force: {
+      type: "boolean",
+    },
+  },
+};
+
+module.exports = {
+  providerActivationSchema,
+  createProvidersSchema,
+  getProvidersSchema,
+  editProviderSchema,
+};

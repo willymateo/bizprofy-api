@@ -1,5 +1,6 @@
 const { validateAJVSchema } = require(".");
 const {
+  customerActivationSchema,
   createCustomerSchema,
   getCustomersSchema,
   editCustomerSchema,
@@ -32,7 +33,17 @@ const validateEditCustomerSchema = (req, res, next) => {
   validateAJVSchema(req, res, next);
 };
 
+const validateCustomerActivationSchema = (req, res, next) => {
+  req.ajv = {
+    schema: customerActivationSchema,
+    data: req.body,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
 module.exports = {
+  validateCustomerActivationSchema,
   validateCreateCustomerSchema,
   validateGetCustomersSchema,
   validateEditCustomerSchema,

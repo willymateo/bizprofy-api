@@ -114,4 +114,35 @@ const editWarehouseById = async (req, res, next) => {
   }
 };
 
-module.exports = { createWarehouse, getWarehouses, getWarehouseById, editWarehouseById };
+const manageWarehouseActivationById = async (req, res, next) => {
+  try {
+    const { force = false, activate = true } = req.body;
+    const { id = "" } = req.params;
+
+    const warehouse = await Warehouses.findByPk(id, {
+      paranoid: false,
+    });
+
+    if (!warehouse) {
+      return res.status(404).json({ error: { message: "Warehouse not found" } });
+    }
+
+    if (activate) {
+      await warehouse.restore();
+    } else {
+      await warehouse.destroy({ force });
+    }
+
+    return res.status(200).send(warehouse);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  manageWarehouseActivationById,
+  editWarehouseById,
+  getWarehouseById,
+  createWarehouse,
+  getWarehouses,
+};

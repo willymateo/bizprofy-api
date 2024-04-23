@@ -109,4 +109,30 @@ const editUserById = async (req, res, next) => {
   }
 };
 
-module.exports = { createUser, getUsers, getUserById, editUserById };
+const manageUserActivationById = async (req, res, next) => {
+  try {
+    const { force = false, activate = true } = req.body;
+    const { id = "" } = req.params;
+
+    const user = await Users.findByPk(id, {
+      attributes: { exclude: ["passwordHash"] },
+      paranoid: false,
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: { message: "User not found" } });
+    }
+
+    if (activate) {
+      await user.restore();
+    } else {
+      await user.destroy({ force });
+    }
+
+    return res.status(200).send(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createUser, getUsers, getUserById, editUserById, manageUserActivationById };

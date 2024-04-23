@@ -1,39 +1,10 @@
-const { validateAJVSchema } = require(".");
+const { validateAJVSchema } = require("..");
 const {
+  productCategoryActivationSchema,
   createProductCategorySchema,
   getProductCategoriesSchema,
   editProductCategorySchema,
-  createProductSchema,
-  getProductsSchema,
-  editProductSchema,
-} = require("../../ajvSchemas/products");
-
-const validateGetProductSchema = (req, res, next) => {
-  req.ajv = {
-    schema: getProductsSchema,
-    data: req.query,
-  };
-
-  validateAJVSchema(req, res, next);
-};
-
-const validateCreateProductSchema = (req, res, next) => {
-  req.ajv = {
-    schema: createProductSchema,
-    data: req.body,
-  };
-
-  validateAJVSchema(req, res, next);
-};
-
-const validateEditProductSchema = (req, res, next) => {
-  req.ajv = {
-    schema: editProductSchema,
-    data: req.body,
-  };
-
-  validateAJVSchema(req, res, next);
-};
+} = require("../../../ajvSchemas/products/categories");
 
 const validateGetProductCategorySchema = (req, res, next) => {
   req.ajv = {
@@ -62,11 +33,18 @@ const validateEditProductCategorySchema = (req, res, next) => {
   validateAJVSchema(req, res, next);
 };
 
+const validateProductCategoryActivationSchema = (req, res, next) => {
+  req.ajv = {
+    schema: productCategoryActivationSchema,
+    data: req.body,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
 module.exports = {
+  validateProductCategoryActivationSchema,
   validateCreateProductCategorySchema,
   validateEditProductCategorySchema,
   validateGetProductCategorySchema,
-  validateCreateProductSchema,
-  validateEditProductSchema,
-  validateGetProductSchema,
 };

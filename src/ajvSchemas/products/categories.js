@@ -1,4 +1,4 @@
-const getWarehousesSchema = {
+const getProductCategoriesSchema = {
   additionalProperties: false,
   type: "object",
   required: [],
@@ -21,34 +21,28 @@ const getWarehousesSchema = {
   },
 };
 
-const createWarehouseSchema = {
+const createProductCategorySchema = {
   required: ["name"],
   additionalProperties: false,
   type: "object",
   properties: {
-    code: {
-      type: "string",
-    },
     name: {
       type: "string",
     },
   },
 };
 
-const editWarehouseSchema = {
+const editProductCategorySchema = {
   additionalProperties: false,
   type: "object",
   properties: {
-    code: {
-      type: "string",
-    },
     name: {
       type: "string",
     },
   },
 };
 
-const warehouseActivationSchema = {
+const productCategoryActivationSchema = {
   additionalProperties: false,
   type: "object",
   properties: {
@@ -62,8 +56,8 @@ const warehouseActivationSchema = {
 };
 
 module.exports = {
-  warehouseActivationSchema,
-  createWarehouseSchema,
-  getWarehousesSchema,
-  editWarehouseSchema,
+  productCategoryActivationSchema,
+  createProductCategorySchema,
+  getProductCategoriesSchema,
+  editProductCategorySchema,
 };

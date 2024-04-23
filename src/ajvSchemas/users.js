@@ -85,4 +85,17 @@ const editUserSchema = {
   },
 };
 
-module.exports = { createUserSchema, getUsersSchema, editUserSchema };
+const userActivationSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    activate: {
+      type: "boolean",
+    },
+    force: {
+      type: "boolean",
+    },
+  },
+};
+
+module.exports = { createUserSchema, getUsersSchema, editUserSchema, userActivationSchema };

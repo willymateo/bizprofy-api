@@ -1,8 +1,8 @@
 const { Router } = require("express");
 
+const currentStock = require("./current");
 const stockOutRouter = require("./out");
 const stockInRouter = require("./in");
-const currentStock = require("./current");
 
 const router = Router();
 
