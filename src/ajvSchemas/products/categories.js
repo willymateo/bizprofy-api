@@ -42,7 +42,21 @@ const editProductCategorySchema = {
   },
 };
 
+const productCategoryActivationSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    activate: {
+      type: "boolean",
+    },
+    force: {
+      type: "boolean",
+    },
+  },
+};
+
 module.exports = {
+  productCategoryActivationSchema,
   createProductCategorySchema,
   getProductCategoriesSchema,
   editProductCategorySchema,

@@ -86,7 +86,21 @@ const editProductSchema = {
   },
 };
 
+const productActivationSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    activate: {
+      type: "boolean",
+    },
+    force: {
+      type: "boolean",
+    },
+  },
+};
+
 module.exports = {
+  productActivationSchema,
   createProductSchema,
   editProductSchema,
   getProductsSchema,

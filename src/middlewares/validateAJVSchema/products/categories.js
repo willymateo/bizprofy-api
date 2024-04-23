@@ -1,5 +1,6 @@
 const { validateAJVSchema } = require("..");
 const {
+  productCategoryActivationSchema,
   createProductCategorySchema,
   getProductCategoriesSchema,
   editProductCategorySchema,
@@ -32,7 +33,17 @@ const validateEditProductCategorySchema = (req, res, next) => {
   validateAJVSchema(req, res, next);
 };
 
+const validateProductCategoryActivationSchema = (req, res, next) => {
+  req.ajv = {
+    schema: productCategoryActivationSchema,
+    data: req.body,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
 module.exports = {
+  validateProductCategoryActivationSchema,
   validateCreateProductCategorySchema,
   validateEditProductCategorySchema,
   validateGetProductCategorySchema,

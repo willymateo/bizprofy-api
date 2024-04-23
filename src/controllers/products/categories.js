@@ -98,7 +98,33 @@ const editProductCategoryById = async (req, res, next) => {
   }
 };
 
+const manageProductCategoryActivationById = async (req, res, next) => {
+  try {
+    const { force = false, activate = true } = req.body;
+    const { id = "" } = req.params;
+
+    const productCategory = await ProductCategories.findByPk(id, {
+      paranoid: false,
+    });
+
+    if (!productCategory) {
+      return res.status(404).json({ error: { message: "Product category not found" } });
+    }
+
+    if (activate) {
+      await productCategory.restore();
+    } else {
+      await productCategory.destroy({ force });
+    }
+
+    return res.status(200).send(productCategory);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
+  manageProductCategoryActivationById,
   editProductCategoryById,
   getProductCategoryById,
   createProductCategory,

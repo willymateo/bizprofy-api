@@ -90,6 +90,7 @@ const getProducts = async (req, res, next) => {
             },
           }),
         },
+        paranoid: false,
         offset,
         limit,
         order: [["createdAt", order]],
@@ -178,7 +179,33 @@ const editProductById = async (req, res, next) => {
   }
 };
 
+const manageProductActivationById = async (req, res, next) => {
+  try {
+    const { force = false, activate = true } = req.body;
+    const { id = "" } = req.params;
+
+    const product = await Products.findByPk(id, {
+      paranoid: false,
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: { message: "Product not found" } });
+    }
+
+    if (activate) {
+      await product.restore();
+    } else {
+      await product.destroy({ force });
+    }
+
+    return res.status(200).send(product);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
+  manageProductActivationById,
   editProductById,
   getProductById,
   createProduct,
