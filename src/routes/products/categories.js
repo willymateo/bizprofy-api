@@ -1,11 +1,11 @@
 const { Router } = require("express");
 
-const { verifyToken } = require("../../middlewares/authJwt");
 const {
   validateCreateProductCategorySchema,
   validateEditProductCategorySchema,
   validateGetProductCategorySchema,
 } = require("../../middlewares/validateAJVSchema/products/categories");
+const { verifyToken } = require("../../middlewares/authJwt");
 const {
   editProductCategoryById,
   getProductCategoryById,

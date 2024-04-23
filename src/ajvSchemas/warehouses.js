@@ -48,4 +48,22 @@ const editWarehouseSchema = {
   },
 };
 
-module.exports = { createWarehouseSchema, getWarehousesSchema, editWarehouseSchema };
+const warehouseActivationSchema = {
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    activate: {
+      type: "boolean",
+    },
+    force: {
+      type: "boolean",
+    },
+  },
+};
+
+module.exports = {
+  warehouseActivationSchema,
+  createWarehouseSchema,
+  getWarehousesSchema,
+  editWarehouseSchema,
+};

@@ -6,13 +6,13 @@ const {
   validateEditProductSchema,
   validateGetProductSchema,
 } = require("../../middlewares/validateAJVSchema/products");
+const productCategoriesRouter = require("./categories");
 const {
   editProductById,
   getProductById,
   createProduct,
   getProducts,
 } = require("../../controllers/products");
-const productCategoriesRouter = require("./categories");
 
 const router = Router();
 
