@@ -1,6 +1,9 @@
 const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 
+const { UserEntityPermissions } = require("../db/models/userEntityPermissions");
+const { EntityPermissions } = require("../db/models/entityPermissions");
+const { UserEntityAccess } = require("../db/models/userEntityAccess");
 const { BCRYPT_SALT_ROUNDS } = require("../config/app.config");
 const { Warehouses } = require("../db/models/warehouses");
 const { Companies } = require("../db/models/companies");
@@ -28,12 +31,14 @@ const login = async (req, res, next) => {
     }
 
     const company = await user.getCompany();
+    const permissions = await user.getPermissions();
 
     const { passwordHash: _, companyId: __, ...userWithoutPassword } = user.dataValues;
 
     req.tokenPayload = {
       ...userWithoutPassword,
       company: company.dataValues,
+      permissions,
     };
 
     next();
@@ -79,12 +84,52 @@ const signUp = async (req, res, next) => {
       transaction: t,
     });
 
+    const entityPermissions = await EntityPermissions.findAll();
+    const entities = entityPermissions.map(({ entityId }) => entityId);
+
+    await UserEntityAccess.bulkCreate(
+      entities.map(entityId => ({
+        userId: newUser.id,
+        hasAccess: true,
+        entityId,
+      })),
+      { transaction: t },
+    );
+
+    await UserEntityPermissions.bulkCreate(
+      entityPermissions.map(entityPermission => ({
+        entityPermissionId: entityPermission.id,
+        userId: newUser.id,
+        hasAccess: true,
+      })),
+      { transaction: t },
+    );
+
     await t.commit();
+
+    let permissions = {};
+
+    entityPermissions?.forEach(({ entityId = "", permission = "" } = {}) => {
+      if (!permissions[entityId]) {
+        permissions[entityId] = {
+          hasAccess: true,
+          grant: [],
+        };
+      }
+
+      permissions[entityId] = {
+        ...permissions[entityId],
+        granted: [...permissions[entityId].granted, permission],
+      };
+    });
 
     return res.status(201).json({
       warehouse: newDefaultWarehouse,
       company: newCompany,
-      user: newUser,
+      user: {
+        ...newUser.dataValues,
+        permissions,
+      },
     });
   } catch (err) {
     await t.rollback();

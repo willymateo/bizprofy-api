@@ -105,4 +105,8 @@ Users.prototype.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.passwordHash);
 };
 
+Users.prototype.getPermissions = async function (password) {
+  return await bcrypt.compare(password, this.passwordHash);
+};
+
 module.exports = { Users };
