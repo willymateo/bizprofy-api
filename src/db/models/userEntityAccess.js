@@ -44,6 +44,7 @@ Users.hasMany(UserEntityAccess, {
   foreignKey: "userId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
+  as: "userEntityAccess",
 });
 
 UserEntityAccess.belongsTo(Entities, {
@@ -55,6 +56,7 @@ Entities.hasMany(UserEntityAccess, {
   foreignKey: "entityId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
+  as: "userEntityAccess",
 });
 
 module.exports = { UserEntityAccess };

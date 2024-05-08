@@ -31,14 +31,14 @@ const login = async (req, res, next) => {
     }
 
     const company = await user.getCompany();
-    const permissions = await user.getPermissions();
+    const entityPermissions = await user.getPermissions();
 
     const { passwordHash: _, companyId: __, ...userWithoutPassword } = user.dataValues;
 
     req.tokenPayload = {
       ...userWithoutPassword,
       company: company.dataValues,
-      permissions,
+      entityPermissions,
     };
 
     next();
@@ -85,41 +85,39 @@ const signUp = async (req, res, next) => {
     });
 
     const entityPermissions = await EntityPermissions.findAll();
-    const entities = entityPermissions.map(({ entityId }) => entityId);
+    let entities = entityPermissions?.map(({ entityId }) => entityId);
+    entities = [...new Set(entities)];
 
-    await UserEntityAccess.bulkCreate(
-      entities.map(entityId => ({
-        userId: newUser.id,
-        hasAccess: true,
-        entityId,
-      })),
-      { transaction: t },
-    );
+    const newUserEntityAccess = entities?.map(entityId => ({
+      userId: newUser.id,
+      hasAccess: true,
+      entityId,
+    }));
 
-    await UserEntityPermissions.bulkCreate(
-      entityPermissions.map(entityPermission => ({
-        entityPermissionId: entityPermission.id,
-        userId: newUser.id,
-        hasAccess: true,
-      })),
-      { transaction: t },
-    );
+    const newUserEntityPermissions = entityPermissions?.map(entityPermission => ({
+      entityPermissionId: entityPermission.id,
+      userId: newUser.id,
+      hasAccess: true,
+    }));
+
+    await UserEntityAccess.bulkCreate(newUserEntityAccess, { transaction: t });
+    await UserEntityPermissions.bulkCreate(newUserEntityPermissions, { transaction: t });
 
     await t.commit();
 
     let permissions = {};
 
     entityPermissions?.forEach(({ entityId = "", permission = "" } = {}) => {
-      if (!permissions[entityId]) {
+      if (!permissions?.[entityId]) {
         permissions[entityId] = {
           hasAccess: true,
-          grant: [],
+          granted: [],
         };
       }
 
       permissions[entityId] = {
-        ...permissions[entityId],
-        granted: [...permissions[entityId].granted, permission],
+        ...(permissions?.[entityId] ?? {}),
+        granted: [...(permissions?.[entityId]?.granted ?? []), permission],
       };
     });
 

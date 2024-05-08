@@ -105,8 +105,42 @@ Users.prototype.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.passwordHash);
 };
 
-Users.prototype.getPermissions = async function (password) {
-  return await bcrypt.compare(password, this.passwordHash);
+Users.prototype.getPermissions = async function () {
+  const { UserEntityPermissions } = await import("./userEntityPermissions.js");
+  const { EntityPermissions } = await import("./entityPermissions.js");
+  const { UserEntityAccess } = await import("./userEntityAccess.js");
+
+  let entityPermissions = {};
+
+  const userEntityAccess = await UserEntityAccess.findAll({
+    where: { userId: this.id },
+  });
+  const userEntityPermissions = await UserEntityPermissions.findAll({
+    where: { userId: this.id },
+    include: [{ model: EntityPermissions, as: "entityPermission" }],
+  });
+
+  userEntityAccess?.forEach(({ entityId, hasAccess } = {}) => {
+    let permissions = {};
+
+    userEntityPermissions
+      ?.filter(
+        userEntityPermission => userEntityPermission?.entityPermission?.entityId === entityId,
+      )
+      ?.forEach(({ entityPermission = {}, hasAccess } = {}) => {
+        permissions = {
+          ...permissions,
+          [entityPermission?.permission]: hasAccess,
+        };
+      });
+
+    entityPermissions[entityId] = {
+      hasAccess,
+      permissions,
+    };
+  });
+
+  return entityPermissions;
 };
 
 module.exports = { Users };

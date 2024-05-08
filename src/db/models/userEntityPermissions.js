@@ -42,17 +42,19 @@ Users.hasMany(UserEntityPermissions, {
   foreignKey: "userId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
+  as: "userEntityPermissions",
 });
 
 UserEntityPermissions.belongsTo(EntityPermissions, {
   foreignKey: "entityPermissionId",
-  as: "entity",
+  as: "entityPermission",
 });
 
 EntityPermissions.hasMany(UserEntityPermissions, {
   foreignKey: "entityPermissionId",
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
+  as: "userEntityPermissions",
 });
 
 module.exports = { UserEntityPermissions };
