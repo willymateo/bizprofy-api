@@ -1,6 +1,9 @@
 const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 
+const { UserEntityPermissions } = require("../db/models/userEntityPermissions");
+const { EntityPermissions } = require("../db/models/entityPermissions");
+const { UserEntityAccess } = require("../db/models/userEntityAccess");
 const { BCRYPT_SALT_ROUNDS } = require("../config/app.config");
 const { Warehouses } = require("../db/models/warehouses");
 const { Companies } = require("../db/models/companies");
@@ -28,12 +31,14 @@ const login = async (req, res, next) => {
     }
 
     const company = await user.getCompany();
+    const entityPermissions = await user.getPermissions();
 
     const { passwordHash: _, companyId: __, ...userWithoutPassword } = user.dataValues;
 
     req.tokenPayload = {
       ...userWithoutPassword,
       company: company.dataValues,
+      entityPermissions,
     };
 
     next();
@@ -79,12 +84,50 @@ const signUp = async (req, res, next) => {
       transaction: t,
     });
 
+    const entityPermissions = await EntityPermissions.findAll();
+    let entities = entityPermissions?.map(({ entityId }) => entityId);
+    entities = [...new Set(entities)];
+
+    const newUserEntityAccess = entities?.map(entityId => ({
+      userId: newUser.id,
+      hasAccess: true,
+      entityId,
+    }));
+
+    const newUserEntityPermissions = entityPermissions?.map(entityPermission => ({
+      entityPermissionId: entityPermission.id,
+      userId: newUser.id,
+      hasAccess: true,
+    }));
+
+    await UserEntityAccess.bulkCreate(newUserEntityAccess, { transaction: t });
+    await UserEntityPermissions.bulkCreate(newUserEntityPermissions, { transaction: t });
+
     await t.commit();
+
+    let permissions = {};
+
+    entityPermissions?.forEach(({ entityId = "", permission = "" } = {}) => {
+      if (!permissions?.[entityId]) {
+        permissions[entityId] = {
+          hasAccess: true,
+          granted: [],
+        };
+      }
+
+      permissions[entityId] = {
+        ...(permissions?.[entityId] ?? {}),
+        granted: [...(permissions?.[entityId]?.granted ?? []), permission],
+      };
+    });
 
     return res.status(201).json({
       warehouse: newDefaultWarehouse,
       company: newCompany,
-      user: newUser,
+      user: {
+        ...newUser.dataValues,
+        permissions,
+      },
     });
   } catch (err) {
     await t.rollback();

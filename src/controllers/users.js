@@ -1,7 +1,10 @@
 const bcrypt = require("bcrypt");
 
+const { UserEntityAccess } = require("../db/models/userEntityAccess");
 const { BCRYPT_SALT_ROUNDS } = require("../config/app.config");
 const { Companies } = require("../db/models/companies");
+const { Entities } = require("../db/models/entities");
+const { sequelize } = require("../db/connection");
 const { Users } = require("../db/models/users");
 const { ORDER } = require("../constants");
 
@@ -45,6 +48,8 @@ const getUsers = async (req, res, next) => {
 };
 
 const createUser = async (req, res, next) => {
+  const t = await sequelize.transaction();
+
   try {
     const { password = "", ...newUserData } = req.body;
     const {
@@ -61,14 +66,28 @@ const createUser = async (req, res, next) => {
 
     const newUserInstance = Users.build({ ...newUserData, companyId, passwordHash });
 
+    const entities = await Entities.findAll();
+
+    const newUserEntityAccess = entities.map(({ name = "" } = {}) => ({
+      userId: newUserInstance.id,
+      hasAccess: true,
+      entityId: name,
+    }));
+
     // Validate data
     await newUserInstance.validate();
 
     // Save the registers in the DB
-    const newUser = await newUserInstance.save();
+    const newUser = await newUserInstance.save({ transaction: t });
+
+    await UserEntityAccess.bulkCreate(newUserEntityAccess, { transaction: t });
+
+    await t.commit();
 
     return res.status(201).json(newUser);
   } catch (error) {
+    await t.rollback();
+
     next(error);
   }
 };
