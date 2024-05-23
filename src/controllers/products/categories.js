@@ -1,6 +1,9 @@
-const { Op } = require("sequelize");
+const Sequelize = require("sequelize");
 
 const { ProductCategories } = require("../../db/models/productCategories");
+const { Products } = require("../../db/models/products");
+const { StockOut } = require("../../db/models/stockOut");
+const { STOCK_STATUS_FIELDS } = require("./constants");
 const { ORDER } = require("../../constants");
 
 const getProductCategoryById = async (req, res, next) => {
@@ -35,7 +38,7 @@ const getProductCategories = async (req, res, next) => {
         companyId: company.id,
         ...(q && {
           name: {
-            [Op.iLike]: `%${q}%`,
+            [Sequelize.Op.iLike]: `%${q}%`,
           },
         }),
       },
@@ -46,6 +49,78 @@ const getProductCategories = async (req, res, next) => {
     });
 
     res.status(200).json(bdResult);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getProductCategoriesStockStatus = async (req, res, next) => {
+  try {
+    const {
+      orderByField = STOCK_STATUS_FIELDS.STOCK_OUT_TOTAL_QUANTITY,
+      transactionDateGreaterThanOrEqualTo,
+      transactionDateLessThanOrEqualTo,
+      order = ORDER.DESC,
+      offset = 0,
+      limit = 5,
+    } = req.query;
+    const { company } = req.decodedToken;
+
+    const stockOutData =
+      (await StockOut.findAll({
+        include: [
+          {
+            include: [{ model: ProductCategories, as: "productCategory", attributes: [] }],
+            where: { companyId: company.id },
+            model: Products,
+            attributes: [],
+            as: "product",
+          },
+        ],
+        attributes: [
+          [
+            Sequelize.cast(Sequelize.fn("sum", Sequelize.col("quantity")), "INTEGER"),
+            STOCK_STATUS_FIELDS.STOCK_OUT_TOTAL_QUANTITY,
+          ],
+          [
+            Sequelize.fn("sum", Sequelize.literal('"StockOut"."unit_price" * quantity')),
+            STOCK_STATUS_FIELDS.TOTAL_PRICE_SUM,
+          ],
+          [Sequelize.literal('"product->productCategory"."name"'), "productCategoryName"],
+          [Sequelize.literal('"product->productCategory"."id"'), "productCategoryId"],
+        ],
+        where: {
+          transactionDate: {
+            [Sequelize.Op.gte]: transactionDateGreaterThanOrEqualTo,
+            [Sequelize.Op.lte]: transactionDateLessThanOrEqualTo,
+          },
+        },
+        group: ["product.productCategory.id"],
+        order: [[Sequelize.literal(orderByField), order]],
+        offset,
+        limit,
+      })) ?? [];
+
+    const data =
+      stockOutData?.map(
+        ({
+          dataValues: {
+            [STOCK_STATUS_FIELDS.STOCK_OUT_TOTAL_QUANTITY]: totalQuantity = 0,
+            [STOCK_STATUS_FIELDS.TOTAL_PRICE_SUM]: totalPriceSum = 0,
+            productCategoryId,
+            productCategoryName,
+          } = {},
+        } = {}) => ({
+          productCategory: {
+            name: productCategoryName,
+            id: productCategoryId,
+          },
+          totalQuantity,
+          totalPriceSum,
+        }),
+      ) ?? [];
+
+    return res.status(200).json({ data });
   } catch (err) {
     next(err);
   }
@@ -125,6 +200,7 @@ const manageProductCategoryActivationById = async (req, res, next) => {
 
 module.exports = {
   manageProductCategoryActivationById,
+  getProductCategoriesStockStatus,
   editProductCategoryById,
   getProductCategoryById,
   createProductCategory,

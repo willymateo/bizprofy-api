@@ -1,6 +1,7 @@
 const { Router } = require("express");
 
 const {
+  validateGetProductCategoriesStockStatusSchema,
   validateProductCategoryActivationSchema,
   validateCreateProductCategorySchema,
   validateEditProductCategorySchema,
@@ -9,6 +10,7 @@ const {
 const { verifyToken } = require("../../middlewares/authJwt");
 const {
   manageProductCategoryActivationById,
+  getProductCategoriesStockStatus,
   editProductCategoryById,
   getProductCategoryById,
   createProductCategory,
@@ -17,16 +19,26 @@ const {
 
 const router = Router();
 
+router.get("/", verifyToken, validateGetProductCategorySchema, getProductCategories);
+
+router.get(
+  "/stock/status",
+  validateGetProductCategoriesStockStatusSchema,
+  verifyToken,
+  getProductCategoriesStockStatus,
+);
+
+router.post("/", verifyToken, validateCreateProductCategorySchema, createProductCategory);
+
 router.get("/:id", verifyToken, getProductCategoryById);
+
 router.patch("/:id", validateEditProductCategorySchema, verifyToken, editProductCategoryById);
+
 router.patch(
   "/:id/activation",
   validateProductCategoryActivationSchema,
   verifyToken,
   manageProductCategoryActivationById,
 );
-
-router.get("/", verifyToken, validateGetProductCategorySchema, getProductCategories);
-router.post("/", verifyToken, validateCreateProductCategorySchema, createProductCategory);
 
 module.exports = router;

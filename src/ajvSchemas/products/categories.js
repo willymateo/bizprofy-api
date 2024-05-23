@@ -21,6 +21,32 @@ const getProductCategoriesSchema = {
   },
 };
 
+const getProductCategoriesStockStatusSchema = {
+  additionalProperties: false,
+  type: "object",
+  required: ["transactionDateGreaterThanOrEqualTo", "transactionDateLessThanOrEqualTo"],
+  properties: {
+    orderByField: {
+      type: "string",
+    },
+    order: {
+      type: "string",
+    },
+    limit: {
+      type: "string",
+    },
+    offset: {
+      type: "string",
+    },
+    transactionDateGreaterThanOrEqualTo: {
+      type: "string",
+    },
+    transactionDateLessThanOrEqualTo: {
+      type: "string",
+    },
+  },
+};
+
 const createProductCategorySchema = {
   required: ["name"],
   additionalProperties: false,
@@ -56,6 +82,7 @@ const productCategoryActivationSchema = {
 };
 
 module.exports = {
+  getProductCategoriesStockStatusSchema,
   productCategoryActivationSchema,
   createProductCategorySchema,
   getProductCategoriesSchema,

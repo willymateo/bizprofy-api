@@ -21,6 +21,32 @@ const getCustomersSchema = {
   },
 };
 
+const getCustomersStockStatusSchema = {
+  additionalProperties: false,
+  type: "object",
+  required: ["transactionDateGreaterThanOrEqualTo", "transactionDateLessThanOrEqualTo"],
+  properties: {
+    orderByField: {
+      type: "string",
+    },
+    order: {
+      type: "string",
+    },
+    limit: {
+      type: "string",
+    },
+    offset: {
+      type: "string",
+    },
+    transactionDateGreaterThanOrEqualTo: {
+      type: "string",
+    },
+    transactionDateLessThanOrEqualTo: {
+      type: "string",
+    },
+  },
+};
+
 const createCustomerSchema = {
   required: ["idCard", "firstNames", "lastNames", "email", "phoneNumber", "address"],
   additionalProperties: false,
@@ -86,6 +112,7 @@ const customerActivationSchema = {
 };
 
 module.exports = {
+  getCustomersStockStatusSchema,
   customerActivationSchema,
   createCustomerSchema,
   getCustomersSchema,

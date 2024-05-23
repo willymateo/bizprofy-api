@@ -64,7 +64,11 @@ const getStockOut = async (req, res, next) => {
             model: Products,
             as: "product",
           },
-          { model: Customers, as: "customer" },
+          {
+            where: { companyId: company.id },
+            model: Customers,
+            as: "customer",
+          },
         ],
         attributes: { exclude: ["productId", "customerId"] },
         where: conditions,

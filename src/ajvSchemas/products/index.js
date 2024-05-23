@@ -29,6 +29,32 @@ const getProductsSchema = {
   },
 };
 
+const getProductsStockStatusSchema = {
+  additionalProperties: false,
+  type: "object",
+  required: ["transactionDateGreaterThanOrEqualTo", "transactionDateLessThanOrEqualTo"],
+  properties: {
+    orderByField: {
+      type: "string",
+    },
+    order: {
+      type: "string",
+    },
+    limit: {
+      type: "string",
+    },
+    offset: {
+      type: "string",
+    },
+    transactionDateGreaterThanOrEqualTo: {
+      type: "string",
+    },
+    transactionDateLessThanOrEqualTo: {
+      type: "string",
+    },
+  },
+};
+
 const createProductSchema = {
   additionalProperties: false,
   type: "object",
@@ -100,6 +126,7 @@ const productActivationSchema = {
 };
 
 module.exports = {
+  getProductsStockStatusSchema,
   productActivationSchema,
   createProductSchema,
   editProductSchema,

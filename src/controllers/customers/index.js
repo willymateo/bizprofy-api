@@ -1,7 +1,9 @@
-const { Op } = require("sequelize");
+const Sequelize = require("sequelize");
 
-const { Customers } = require("../db/models/customers");
-const { ORDER } = require("../constants");
+const { Customers } = require("../../db/models/customers");
+const { StockOut } = require("../../db/models/stockOut");
+const { STOCK_STATUS_FIELDS } = require("./constants");
+const { ORDER } = require("../../constants");
 
 const getCustomerById = async (req, res, next) => {
   try {
@@ -35,20 +37,20 @@ const getCustomers = async (req, res, next) => {
         where: {
           companyId: company.id,
           ...(q && {
-            [Op.or]: [
+            [Sequelize.Op.or]: [
               {
                 idCard: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
               {
                 firstNames: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
               {
                 lastNames: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
             ],
@@ -61,6 +63,70 @@ const getCustomers = async (req, res, next) => {
       })) ?? {};
 
     res.status(200).json(bdResult);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getCustomersStockStatus = async (req, res, next) => {
+  try {
+    const {
+      orderByField = STOCK_STATUS_FIELDS.STOCK_OUT_TOTAL_QUANTITY,
+      transactionDateGreaterThanOrEqualTo,
+      transactionDateLessThanOrEqualTo,
+      order = ORDER.DESC,
+      offset = 0,
+      limit = 5,
+    } = req.query;
+    const { company } = req.decodedToken;
+
+    const stockOutData =
+      (await StockOut.findAll({
+        include: [
+          {
+            where: { companyId: company.id },
+            model: Customers,
+            as: "customer",
+          },
+        ],
+        attributes: [
+          [
+            Sequelize.cast(Sequelize.fn("sum", Sequelize.col("quantity")), "INTEGER"),
+            STOCK_STATUS_FIELDS.STOCK_OUT_TOTAL_QUANTITY,
+          ],
+          [
+            Sequelize.fn("sum", Sequelize.literal('"StockOut"."unit_price" * quantity')),
+            STOCK_STATUS_FIELDS.TOTAL_PRICE_SUM,
+          ],
+        ],
+        where: {
+          transactionDate: {
+            [Sequelize.Op.gte]: transactionDateGreaterThanOrEqualTo,
+            [Sequelize.Op.lte]: transactionDateLessThanOrEqualTo,
+          },
+        },
+        group: ["customer.id"],
+        order: [[Sequelize.literal(orderByField), order]],
+        offset,
+        limit,
+      })) ?? [];
+
+    const data =
+      stockOutData?.map(
+        ({
+          dataValues: {
+            [STOCK_STATUS_FIELDS.STOCK_OUT_TOTAL_QUANTITY]: totalQuantity = 0,
+            [STOCK_STATUS_FIELDS.TOTAL_PRICE_SUM]: totalPriceSum = 0,
+            ...rest
+          } = {},
+        } = {}) => ({
+          ...rest,
+          totalQuantity,
+          totalPriceSum,
+        }),
+      ) ?? [];
+
+    return res.status(200).json({ data });
   } catch (err) {
     next(err);
   }
@@ -143,6 +209,7 @@ const manageCustomerActivationById = async (req, res, next) => {
 
 module.exports = {
   manageCustomerActivationById,
+  getCustomersStockStatus,
   editCustomerById,
   getCustomerById,
   createCustomer,
