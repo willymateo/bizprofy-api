@@ -22,12 +22,10 @@ const Warehouses = sequelize.define(
     companyId: {
       type: DataTypes.UUIDV4,
       allowNull: false,
-      unique: "unique_warehouse_company_id_code",
     },
     code: {
       type: DataTypes.STRING,
       defaultValue: null,
-      unique: "unique_warehouse_company_id_code",
       allowNull: true,
     },
     name: {

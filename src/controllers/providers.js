@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const Sequelize = require("sequelize");
 
 const { Providers } = require("../db/models/providers");
 const { ORDER } = require("../constants");
@@ -35,20 +35,20 @@ const getProviders = async (req, res, next) => {
         where: {
           companyId: company.id,
           ...(q && {
-            [Op.or]: [
+            [Sequelize.Op.or]: [
               {
                 idCard: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
               {
                 firstNames: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
               {
                 lastNames: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
             ],
@@ -113,11 +113,32 @@ const editProviderById = async (req, res, next) => {
     const idCard = req.body.idCard || null;
     const email = req.body.email || null;
     const { id = "" } = req.params;
+    const {
+      company: { id: companyId },
+    } = req.auth;
 
     const provider = await Providers.findByPk(id);
 
     if (!provider) {
       return res.status(404).json({ error: { message: "Provider not found" } });
+    }
+
+    if (idCard) {
+      const providerWithSameIdCard = await Providers.findOne({
+        where: {
+          companyId,
+          id: {
+            [Sequelize.Op.not]: id,
+          },
+          idCard,
+        },
+      });
+
+      if (providerWithSameIdCard) {
+        return res
+          .status(400)
+          .json({ error: { message: "Provider with the same ID card already exists" } });
+      }
     }
 
     provider.set({

@@ -181,6 +181,24 @@ const editCustomerById = async (req, res, next) => {
       return res.status(404).json({ error: { message: "Customer not found" } });
     }
 
+    if (req.body.idCard) {
+      const customerWithSameIdCard = await Customers.findOne({
+        where: {
+          companyId: customer.companyId,
+          idCard: req.body.idCard,
+          id: {
+            [Sequelize.Op.ne]: id,
+          },
+        },
+      });
+
+      if (customerWithSameIdCard && customerWithSameIdCard.id !== id) {
+        return res
+          .status(400)
+          .json({ error: { message: "Customer with the same ID card already exists" } });
+      }
+    }
+
     customer.set({ ...req.body, email });
 
     // Validate data

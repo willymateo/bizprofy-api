@@ -45,7 +45,6 @@ module.exports = {
         code: {
           type: Sequelize.STRING,
           defaultValue: null,
-          unique: true,
           allowNull: true,
         },
         name: {

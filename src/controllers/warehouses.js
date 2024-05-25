@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const Sequelize = require("sequelize");
 
 const { Warehouses } = require("../db/models/warehouses");
 const { ORDER } = require("../constants");
@@ -35,15 +35,15 @@ const getWarehouses = async (req, res, next) => {
         where: {
           companyId: company.id,
           ...(q && {
-            [Op.or]: [
+            [Sequelize.Op.or]: [
               {
                 name: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
               {
                 code: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
             ],
@@ -68,6 +68,21 @@ const createWarehouse = async (req, res, next) => {
       company: { id: companyId },
     } = req.auth;
 
+    if (code) {
+      const warehouseWithSameCode = await Warehouses.findOne({
+        where: {
+          companyId,
+          code,
+        },
+      });
+
+      if (warehouseWithSameCode) {
+        return res
+          .status(400)
+          .json({ error: { message: "Warehouse with the same code already exists" } });
+      }
+    }
+
     const newWarehouseInstance = Warehouses.build({
       ...req.body,
       companyId,
@@ -90,11 +105,32 @@ const editWarehouseById = async (req, res, next) => {
   try {
     const code = req.body.code || null;
     const { id = "" } = req.params;
+    const {
+      company: { id: companyId },
+    } = req.auth;
 
     const warehouse = await Warehouses.findByPk(id);
 
     if (!warehouse) {
       return res.status(404).json({ error: { message: "Warehouse not found" } });
+    }
+
+    if (code) {
+      const warehouseWithSameCode = await Warehouses.findOne({
+        where: {
+          id: {
+            [Sequelize.Op.ne]: id,
+          },
+          companyId,
+          code,
+        },
+      });
+
+      if (warehouseWithSameCode) {
+        return res
+          .status(400)
+          .json({ error: { message: "Warehouse with the same code already exists" } });
+      }
     }
 
     warehouse.set({

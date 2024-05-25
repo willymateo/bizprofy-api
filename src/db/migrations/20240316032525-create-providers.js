@@ -21,12 +21,10 @@ module.exports = {
           },
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
-          unique: "unique_provider_company_id_id_card",
         },
         id_card: {
           type: Sequelize.STRING,
           allowNull: true,
-          unique: "unique_provider_company_id_id_card",
         },
         company_name: {
           type: Sequelize.STRING,
