@@ -53,6 +53,11 @@ module.exports = {
           defaultValue: "",
           allowNull: false,
         },
+        is_verified: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
         createdAt: {
           field: "created_at",
           type: Sequelize.DATE,

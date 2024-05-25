@@ -9,6 +9,7 @@ const { Warehouses } = require("../db/models/warehouses");
 const { Companies } = require("../db/models/companies");
 const { sequelize } = require("../db/connection");
 const { Users } = require("../db/models/users");
+const { resend } = require("../utils/resend");
 
 const login = async (req, res, next) => {
   try {
@@ -28,6 +29,10 @@ const login = async (req, res, next) => {
 
     if (!matchPassword) {
       return res.status(401).send({ error: { message: "Invalid credentials" } });
+    }
+
+    if (!user.isVerified) {
+      return res.status(401).send({ error: { message: "User not verified" } });
     }
 
     const company = await user.getCompany();
@@ -63,6 +68,7 @@ const signUp = async (req, res, next) => {
     const newUserInstance = Users.build({
       ...newUserData,
       companyId: newCompanyInstance.id,
+      isVerified: false,
       passwordHash,
     });
 
@@ -120,6 +126,31 @@ const signUp = async (req, res, next) => {
         granted: [...(permissions?.[entityId]?.granted ?? []), permission],
       };
     });
+
+    const { data, error: resendError } = await resend.emails.send({
+      from: `Bizprofy <${process.env.NOREPLY_EMAIL}>`,
+      to: [newUserData.email],
+      subject: "Welcome to Bizprofy!",
+      html: `
+        <h1>Welcome to Bizprofy!</h1>
+        <p>Click <a href="${process.env.BASE_URL}/verify-email/${newUser.id}">here</a> to verify your email.</p>
+      `,
+    });
+
+    if (resendError) {
+      console.log("Error sending the email verification", resendError);
+
+      await t.rollback();
+
+      return res.status(500).json({
+        error: {
+          message: "Error sending the email verification",
+          name: "EmailVerificationError",
+        },
+      });
+    }
+
+    console.log("Email verification sent successfully", data);
 
     return res.status(201).json({
       warehouse: newDefaultWarehouse,

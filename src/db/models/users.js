@@ -81,6 +81,11 @@ const Users = sequelize.define(
       defaultValue: "",
       allowNull: false,
     },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
   },
   {
     paranoid: true,
