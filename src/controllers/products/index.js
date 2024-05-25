@@ -177,6 +177,21 @@ const createProduct = async (req, res, next) => {
       company: { id: companyId },
     } = req.auth;
 
+    if (code) {
+      const productWithSameCode = await Products.findOne({
+        where: {
+          companyId,
+          code,
+        },
+      });
+
+      if (productWithSameCode) {
+        return res
+          .status(400)
+          .json({ error: { message: "Product with the same code already exists" } });
+      }
+    }
+
     const newProductInstance = Products.build({
       ...req.body,
       productCategoryId,
@@ -203,11 +218,32 @@ const editProductById = async (req, res, next) => {
     const providerId = req.body.providerId || null;
     const code = req.body.code || null;
     const { id = "" } = req.params;
+    const {
+      company: { id: companyId },
+    } = req.auth;
 
     const product = await Products.findByPk(id);
 
     if (!product) {
       return res.status(404).json({ error: { message: "Product not found" } });
+    }
+
+    if (code) {
+      const productWithSameCode = await Products.findOne({
+        where: {
+          id: {
+            [Sequelize.Op.ne]: id,
+          },
+          companyId,
+          code,
+        },
+      });
+
+      if (productWithSameCode) {
+        return res
+          .status(400)
+          .json({ error: { message: "Product with the same code already exists" } });
+      }
     }
 
     if (productCategoryId) {

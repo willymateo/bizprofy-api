@@ -21,12 +21,10 @@ module.exports = {
           },
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
-          unique: "unique_warehouse_company_id_code",
         },
         code: {
           type: Sequelize.STRING,
           defaultValue: null,
-          unique: "unique_warehouse_company_id_code",
           allowNull: true,
         },
         name: {
