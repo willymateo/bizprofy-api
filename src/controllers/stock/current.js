@@ -44,7 +44,7 @@ const getCurrentStock = async (req, res, next) => {
         order: [["createdAt", order]],
       })) ?? {};
 
-    const stockConditions = {
+    const stockInAndStockOutConditions = {
       ...((transactionDateGreaterThanOrEqualTo || transactionDateLessThanOrEqualTo) && {
         transactionDate: {
           ...(transactionDateGreaterThanOrEqualTo && {
@@ -105,13 +105,13 @@ const getCurrentStock = async (req, res, next) => {
 
     const stockInData =
       (await StockIn.findAll({
-        where: stockConditions,
+        where: stockInAndStockOutConditions,
         order: [[orderByField, order]],
       })) ?? [];
 
     const stockOutData =
       (await StockOut.findAll({
-        where: stockConditions,
+        where: stockInAndStockOutConditions,
         order: [[orderByField, order]],
       })) ?? [];
 

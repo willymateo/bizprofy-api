@@ -1,8 +1,10 @@
-const { Op } = require("sequelize");
+const Sequelize = require("sequelize");
 
 const { ProductCategories } = require("../../db/models/productCategories");
 const { Providers } = require("../../db/models/providers");
 const { Products } = require("../../db/models/products");
+const { StockOut } = require("../../db/models/stockOut");
+const { STOCK_STATUS_FIELDS } = require("./constants");
 const { ORDER } = require("../../constants");
 
 const getProductById = async (req, res, next) => {
@@ -51,20 +53,20 @@ const getProducts = async (req, res, next) => {
         where: {
           companyId: company.id,
           ...(q && {
-            [Op.or]: [
+            [Sequelize.Op.or]: [
               {
                 name: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
               {
                 code: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
               {
                 description: {
-                  [Op.iLike]: `%${q}%`,
+                  [Sequelize.Op.iLike]: `%${q}%`,
                 },
               },
             ],
@@ -72,20 +74,20 @@ const getProducts = async (req, res, next) => {
           ...((unitPriceLessThanOrEqualTo || unitPriceGreaterThanOrEqualTo) && {
             unitPrice: {
               ...(unitPriceLessThanOrEqualTo && {
-                [Op.lte]: unitPriceLessThanOrEqualTo,
+                [Sequelize.Op.lte]: unitPriceLessThanOrEqualTo,
               }),
               ...(unitPriceGreaterThanOrEqualTo && {
-                [Op.gte]: unitPriceGreaterThanOrEqualTo,
+                [Sequelize.Op.gte]: unitPriceGreaterThanOrEqualTo,
               }),
             },
           }),
           ...((unitCostLessThanOrEqualTo || unitCostGreaterThanOrEqualTo) && {
             unitCost: {
               ...(unitCostLessThanOrEqualTo && {
-                [Op.lte]: unitCostLessThanOrEqualTo,
+                [Sequelize.Op.lte]: unitCostLessThanOrEqualTo,
               }),
               ...(unitCostGreaterThanOrEqualTo && {
-                [Op.gte]: unitCostGreaterThanOrEqualTo,
+                [Sequelize.Op.gte]: unitCostGreaterThanOrEqualTo,
               }),
             },
           }),
@@ -99,6 +101,70 @@ const getProducts = async (req, res, next) => {
     res.status(200).json(bdResult);
   } catch (error) {
     next(error);
+  }
+};
+
+const getProductsStockStatus = async (req, res, next) => {
+  try {
+    const {
+      orderByField = STOCK_STATUS_FIELDS.STOCK_OUT_TOTAL_QUANTITY,
+      transactionDateGreaterThanOrEqualTo,
+      transactionDateLessThanOrEqualTo,
+      order = ORDER.DESC,
+      offset = 0,
+      limit = 5,
+    } = req.query;
+    const { company } = req.decodedToken;
+
+    const stockOutData =
+      (await StockOut.findAll({
+        include: [
+          {
+            where: { companyId: company.id },
+            model: Products,
+            as: "product",
+          },
+        ],
+        attributes: [
+          [
+            Sequelize.cast(Sequelize.fn("sum", Sequelize.col("quantity")), "INTEGER"),
+            STOCK_STATUS_FIELDS.STOCK_OUT_TOTAL_QUANTITY,
+          ],
+          [
+            Sequelize.fn("sum", Sequelize.literal('"StockOut"."unit_price" * quantity')),
+            STOCK_STATUS_FIELDS.TOTAL_PRICE_SUM,
+          ],
+        ],
+        where: {
+          transactionDate: {
+            [Sequelize.Op.gte]: transactionDateGreaterThanOrEqualTo,
+            [Sequelize.Op.lte]: transactionDateLessThanOrEqualTo,
+          },
+        },
+        group: ["product.id"],
+        order: [[Sequelize.literal(orderByField), order]],
+        offset,
+        limit,
+      })) ?? [];
+
+    const data =
+      stockOutData?.map(
+        ({
+          dataValues: {
+            [STOCK_STATUS_FIELDS.STOCK_OUT_TOTAL_QUANTITY]: totalQuantity = 0,
+            [STOCK_STATUS_FIELDS.TOTAL_PRICE_SUM]: totalPriceSum = 0,
+            ...rest
+          } = {},
+        } = {}) => ({
+          ...rest,
+          totalQuantity,
+          totalPriceSum,
+        }),
+      ) ?? [];
+
+    return res.status(200).json({ data });
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -206,6 +272,7 @@ const manageProductActivationById = async (req, res, next) => {
 
 module.exports = {
   manageProductActivationById,
+  getProductsStockStatus,
   editProductById,
   getProductById,
   createProduct,

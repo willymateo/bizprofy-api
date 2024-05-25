@@ -1,5 +1,6 @@
 const { validateAJVSchema } = require(".");
 const {
+  getCustomersStockStatusSchema,
   customerActivationSchema,
   createCustomerSchema,
   getCustomersSchema,
@@ -9,6 +10,15 @@ const {
 const validateGetCustomersSchema = (req, res, next) => {
   req.ajv = {
     schema: getCustomersSchema,
+    data: req.query,
+  };
+
+  validateAJVSchema(req, res, next);
+};
+
+const validateGetCustomersStockStatusSchema = (req, res, next) => {
+  req.ajv = {
+    schema: getCustomersStockStatusSchema,
     data: req.query,
   };
 
@@ -43,6 +53,7 @@ const validateCustomerActivationSchema = (req, res, next) => {
 };
 
 module.exports = {
+  validateGetCustomersStockStatusSchema,
   validateCustomerActivationSchema,
   validateCreateCustomerSchema,
   validateGetCustomersSchema,
