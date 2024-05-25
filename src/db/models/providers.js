@@ -22,12 +22,10 @@ const Providers = sequelize.define(
     companyId: {
       type: DataTypes.UUIDV4,
       allowNull: false,
-      unique: "unique_provider_company_id_id_card",
     },
     idCard: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: "unique_provider_company_id_id_card",
       validate: {
         notEmpty: true,
       },

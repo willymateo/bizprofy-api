@@ -21,13 +21,11 @@ const Customers = sequelize.define(
     },
     companyId: {
       type: DataTypes.UUIDV4,
-      unique: "unique_customer_company_id_id_card",
       allowNull: false,
     },
     idCard: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: "unique_customer_company_id_id_card",
       validate: {
         notEmpty: true,
       },

@@ -74,6 +74,21 @@ const createProvider = async (req, res, next) => {
       company: { id: companyId },
     } = req.auth;
 
+    if (idCard) {
+      const providerWithSameIdCard = await Providers.findOne({
+        where: {
+          companyId,
+          idCard,
+        },
+      });
+
+      if (providerWithSameIdCard) {
+        return res
+          .status(400)
+          .json({ error: { message: "Provider with the same ID card already exists" } });
+      }
+    }
+
     const newProviderInstance = Providers.build({
       ...req.body,
       companyId,
