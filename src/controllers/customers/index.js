@@ -139,6 +139,19 @@ const createCustomer = async (req, res, next) => {
       company: { id: companyId },
     } = req.auth;
 
+    const customerWithSameIdCard = await Customers.findOne({
+      where: {
+        idCard: req.body.idCard,
+        companyId,
+      },
+    });
+
+    if (customerWithSameIdCard) {
+      return res
+        .status(400)
+        .json({ error: { message: "Customer with the same ID card already exists" } });
+    }
+
     const newCustomerInstance = Customers.build({
       ...req.body,
       companyId,
