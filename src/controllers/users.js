@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 
 const { UserEntityAccess } = require("../db/models/userEntityAccess");
@@ -62,6 +63,36 @@ const createUser = async (req, res, next) => {
       return res.status(400).json({ error: "Company not found" });
     }
 
+    const userWithSameEmail = await Users.findOne({
+      where: {
+        email: newUserData.email,
+      },
+    });
+
+    if (userWithSameEmail) {
+      return res.status(400).json({
+        error: {
+          message: "The email is already in use",
+          name: "EmailInUse",
+        },
+      });
+    }
+
+    const userWithSameUsername = await Users.findOne({
+      where: {
+        username: newUserData.username,
+      },
+    });
+
+    if (userWithSameUsername) {
+      return res.status(400).json({
+        error: {
+          message: "The username is already in use",
+          name: "UsernameInUse",
+        },
+      });
+    }
+
     const passwordHash = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
     const newUserInstance = Users.build({ ...newUserData, companyId, passwordHash });
@@ -81,6 +112,27 @@ const createUser = async (req, res, next) => {
     const newUser = await newUserInstance.save({ transaction: t });
 
     await UserEntityAccess.bulkCreate(newUserEntityAccess, { transaction: t });
+
+    const emailVerificationToken = uuidv4();
+
+    const { data, error: errorSendingEmailVerification } = await newUser.sendVerificationEmail({
+      token: emailVerificationToken,
+    });
+
+    if (errorSendingEmailVerification) {
+      console.log("Error sending the email verification", errorSendingEmailVerification);
+
+      await t.rollback();
+
+      return res.status(500).json({
+        error: {
+          message: "Error sending the email verification",
+          name: "EmailVerificationError",
+        },
+      });
+    }
+
+    console.log("Email verification sent successfully", data);
 
     await t.commit();
 

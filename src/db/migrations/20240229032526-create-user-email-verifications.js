@@ -1,11 +1,9 @@
 "use strict";
 
-const { USERNAME_MAX_LENGTH } = require("../../config/app.config");
-
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "users",
+      "user_email_verifications",
       {
         id: {
           type: Sequelize.UUID,
@@ -14,49 +12,30 @@ module.exports = {
           primaryKey: true,
           unique: true,
         },
-        company_id: {
+        user_id: {
           type: Sequelize.UUID,
           allowNull: false,
+          unique: true,
           references: {
-            model: "companies", // Table name.
+            model: "users", // Table name.
             key: "id",
           },
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
         },
-        username: {
-          type: Sequelize.STRING(USERNAME_MAX_LENGTH),
+        token: {
+          type: Sequelize.UUID,
           allowNull: false,
           unique: true,
         },
-        password_hash: {
-          type: Sequelize.STRING(60),
+        expires_at: {
+          type: Sequelize.DATE,
           allowNull: false,
         },
-        first_names: {
-          type: Sequelize.STRING,
-          defaultValue: "",
-          allowNull: false,
-        },
-        last_names: {
-          type: Sequelize.STRING,
-          defaultValue: "",
-          allowNull: false,
-        },
-        email: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          unique: true,
-        },
-        photo_url: {
-          type: Sequelize.STRING,
-          defaultValue: "",
-          allowNull: false,
-        },
-        email_is_verified: {
-          type: Sequelize.BOOLEAN,
-          allowNull: false,
-          defaultValue: false,
+        activated_at: {
+          type: Sequelize.DATE,
+          allowNull: true,
+          defaultValue: null,
         },
         createdAt: {
           field: "created_at",
@@ -78,11 +57,11 @@ module.exports = {
         },
       },
       {
-        comment: "Users accounts information",
+        comment: "User email verification tokens",
       },
     );
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("users");
+    await queryInterface.dropTable("user_email_verifications");
   },
 };

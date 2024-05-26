@@ -51,4 +51,16 @@ const signUpSchema = {
     },
   },
 };
-module.exports = { loginSchema, signUpSchema };
+
+const emailVerificationSchema = {
+  required: ["token"],
+  additionalProperties: false,
+  type: "object",
+  properties: {
+    token: {
+      type: "string",
+    },
+  },
+};
+
+module.exports = { loginSchema, signUpSchema, emailVerificationSchema };
