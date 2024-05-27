@@ -1,9 +1,11 @@
 "use strict";
 
+const { resend } = require("../../utils/resend");
 const { DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 
+const { getEmailVerificationBody, getWelcomeEmailBody } = require("../../utils/emails");
 const { sequelize } = require("../connection");
 const { Companies } = require("./companies");
 const {
@@ -81,6 +83,11 @@ const Users = sequelize.define(
       defaultValue: "",
       allowNull: false,
     },
+    emailIsVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
   },
   {
     paranoid: true,
@@ -101,7 +108,7 @@ Companies.hasMany(Users, {
   onUpdate: "CASCADE",
 });
 
-Users.prototype.comparePassword = async function (password) {
+Users.prototype.comparePassword = async function (password = "") {
   return await bcrypt.compare(password, this.passwordHash);
 };
 
@@ -141,6 +148,29 @@ Users.prototype.getPermissions = async function () {
   });
 
   return entityPermissions;
+};
+
+Users.prototype.sendVerificationEmail = async function ({ token = "" } = {}) {
+  return await resend.emails.send({
+    from: `Bizprofy <${process.env.NOREPLY_EMAIL}>`,
+    to: [this.email],
+    subject: "Verify your Bizprofy account",
+    html: getEmailVerificationBody({
+      user: this,
+      token,
+    }),
+  });
+};
+
+Users.prototype.sendWelcomeEmail = async function () {
+  return await resend.emails.send({
+    from: `Bizprofy <${process.env.NOREPLY_EMAIL}>`,
+    to: [this.email],
+    subject: "Welcome to Bizprofy! Your Partner in Inventory Management",
+    html: getWelcomeEmailBody({
+      user: this,
+    }),
+  });
 };
 
 module.exports = { Users };

@@ -3,4 +3,6 @@ const ORDER = {
   ASC: "ASC",
 };
 
-module.exports = { ORDER };
+const EMAIL_VERIFICATION_MINUTES_TO_EXPIRE = 15;
+
+module.exports = { ORDER, EMAIL_VERIFICATION_MINUTES_TO_EXPIRE };
