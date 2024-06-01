@@ -1,0 +1,39 @@
+services:
+  bizprofy-db:
+    image: postgres
+    container_name: bizprofy-db
+    env_file:
+      - ../../.env
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - ${DB_EXTERNAL_PORT}:${DB_DOCKER_PORT}
+    networks:
+      - bizprofy-network
+
+  bizprofy-api:
+    container_name: bizprofy-api
+    env_file:
+      - ../../.env
+    environment:
+      NODE_ENV: development
+    build:
+      context: ../../
+      dockerfile: docker/Dockerfile
+    image: bizprofy/api:development
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - bizprofy-db
+    volumes:
+      - ../../:/app
+    networks:
+      - bizprofy-network
+    command: npm run start:dev
+
+networks:
+  bizprofy-network:
+    driver: bridge
+    name: bizprofy-network

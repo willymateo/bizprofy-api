@@ -18,7 +18,7 @@ const verifyToken = (req, res, next) => {
       if (error) {
         console.log("Error verifying the JWT", error);
 
-        return res.status(409).send({
+        return res.status(401).send({
           error: {
             message: error.message,
             name: error.name,
@@ -52,7 +52,7 @@ const verifyToken = (req, res, next) => {
   } catch (error) {
     console.log("General error verifying the JWT", error);
 
-    return res.status(409).send({
+    return res.status(401).send({
       error: {
         message: error.message,
         name: error.name,
