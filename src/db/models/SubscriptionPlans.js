@@ -4,10 +4,9 @@ const { DataTypes } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 
 const { sequelize } = require("../connection");
-const { Companies } = require("./companies");
 
-const Warehouses = sequelize.define(
-  "Warehouses",
+const SubscriptionPlans = sequelize.define(
+  "SubscriptionPlans",
   {
     id: {
       type: DataTypes.UUIDV4,
@@ -19,16 +18,12 @@ const Warehouses = sequelize.define(
         isUUID: 4,
       },
     },
-    companyId: {
-      type: DataTypes.UUIDV4,
-      allowNull: false,
-    },
-    code: {
+    paymentProcessorProductId: {
       type: DataTypes.STRING,
       defaultValue: null,
       allowNull: true,
     },
-    name: {
+    alias: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
@@ -40,19 +35,8 @@ const Warehouses = sequelize.define(
     paranoid: true,
     timestamps: true,
     underscored: true,
-    tableName: "warehouses",
+    tableName: "subscription_plans",
   },
 );
 
-Warehouses.belongsTo(Companies, {
-  foreignKey: "companyId",
-  as: "company",
-});
-
-Companies.hasMany(Warehouses, {
-  foreignKey: "companyId",
-  onDelete: "RESTRICT",
-  onUpdate: "CASCADE",
-});
-
-module.exports = { Warehouses };
+module.exports = { SubscriptionPlans };
