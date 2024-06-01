@@ -1,9 +1,10 @@
 "use strict";
 
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "warehouses",
+      "subscription_plans",
       {
         id: {
           type: Sequelize.UUID,
@@ -12,22 +13,11 @@ module.exports = {
           primaryKey: true,
           unique: true,
         },
-        company_id: {
-          type: Sequelize.UUID,
-          allowNull: false,
-          references: {
-            model: "companies", // Table name.
-            key: "id",
-          },
-          onDelete: "RESTRICT",
-          onUpdate: "CASCADE",
-        },
-        code: {
+        payment_processor_product_id: {
           type: Sequelize.STRING,
-          defaultValue: null,
-          allowNull: true,
+          allowNull: false,
         },
-        name: {
+        alias: {
           type: Sequelize.STRING,
           allowNull: false,
         },
@@ -51,11 +41,12 @@ module.exports = {
         },
       },
       {
-        comment: "Warehouses accounts information",
+        comment: "Subscription plans",
       },
     );
   },
+
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("warehouses");
+    await queryInterface.dropTable("subscription_plans");
   },
 };

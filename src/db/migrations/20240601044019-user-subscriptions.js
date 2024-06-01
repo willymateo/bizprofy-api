@@ -1,9 +1,10 @@
 "use strict";
 
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "warehouses",
+      "user_subscriptions",
       {
         id: {
           type: Sequelize.UUID,
@@ -12,23 +13,41 @@ module.exports = {
           primaryKey: true,
           unique: true,
         },
-        company_id: {
+        user_id: {
           type: Sequelize.UUID,
           allowNull: false,
           references: {
-            model: "companies", // Table name.
+            model: "users", // Table name.
             key: "id",
           },
           onDelete: "RESTRICT",
           onUpdate: "CASCADE",
         },
-        code: {
-          type: Sequelize.STRING,
-          defaultValue: null,
-          allowNull: true,
+        subscription_plan_frequency_id: {
+          type: Sequelize.UUID,
+          allowNull: false,
+          references: {
+            model: "subscription_plan_frequencies", // Table name.
+            key: "id",
+          },
+          onDelete: "RESTRICT",
+          onUpdate: "CASCADE",
         },
-        name: {
+        alias: {
           type: Sequelize.STRING,
+          allowNull: false,
+        },
+        starts_at: {
+          type: Sequelize.DATE,
+          allowNull: false,
+          defaultValue: Sequelize.fn("NOW"),
+        },
+        ends_at: {
+          type: Sequelize.DATE,
+          allowNull: false,
+        },
+        renews_at: {
+          type: Sequelize.DATE,
           allowNull: false,
         },
         createdAt: {
@@ -51,11 +70,12 @@ module.exports = {
         },
       },
       {
-        comment: "Warehouses accounts information",
+        comment: "User subscriptions",
       },
     );
   },
+
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("warehouses");
+    await queryInterface.dropTable("user_subscriptions");
   },
 };
