@@ -1,7 +1,7 @@
 services:
   bizprofy-db:
     image: postgres
-    container_name: bizprofy-db
+    container_name: bizprofy-db-development
     env_file:
       - ../../.env
     environment:
@@ -14,7 +14,7 @@ services:
       - bizprofy-network
 
   bizprofy-api:
-    container_name: bizprofy-api
+    container_name: bizprofy-api-development
     env_file:
       - ../../.env
     environment:
