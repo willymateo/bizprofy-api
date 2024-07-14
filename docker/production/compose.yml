@@ -1,6 +1,6 @@
 services:
   bizprofy-api:
-    container_name: bizprofy-api
+    container_name: bizprofy-api-production
     environment:
       NODE_ENV: production
     env_file:
