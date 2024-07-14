@@ -10,22 +10,30 @@ You must have a `.env` file in the `root` of the proyect. The `.env` file must h
 
 ## Setup
 
-### Install dependencies
+### Development
+
+#### Create the image
 
 ```cmd
-npm install
+docker compose -f docker/development/compose.yml build
 ```
 
-### Run server
-
-#### Production
+#### Create and start the container
 
 ```cmd
-npm start
+docker compose -f docker/development/compose.yml up
 ```
 
-#### Development
+### Production
+
+#### Create the image
 
 ```cmd
-npm run start:dev
+docker compose -f docker/production/compose.yml build
+```
+
+#### Create and start the container
+
+```cmd
+docker compose -f docker/production/compose.yml up
 ```
