@@ -1,0 +1,22 @@
+services:
+  bizprofy-api:
+    container_name: bizprofy-api
+    environment:
+      NODE_ENV: production
+    env_file:
+      - ../../.env
+    build:
+      context: ../../
+      dockerfile: docker/Dockerfile
+    image: bizprofy/api:production
+    ports:
+      - ${PORT}:${PORT}
+    restart: on-failure:3
+    networks:
+      - bizprofy-network
+    command: npm start
+
+networks:
+  bizprofy-network:
+    driver: bridge
+    name: bizprofy-network

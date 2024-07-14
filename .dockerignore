@@ -1,0 +1,12 @@
+.git
+.husky
+docker
+node_modules
+.dockerignore
+.env.template
+.gitignore
+.lintstagedrc.json
+.prettierignore
+.prettierrc.json
+.sequelizerc
+README.md

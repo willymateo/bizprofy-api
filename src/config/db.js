@@ -1,17 +1,16 @@
 const baseConfig = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
+  port: process.env.DB_DOCKER_PORT,
   database: process.env.DB_NAME,
   host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
   dialect: "postgres",
-  logging: true,
 };
 
 const dbConfig = {
   development: {
     ...baseConfig,
-    logging: true,
+    logging: console.log,
   },
   production: {
     ...baseConfig,
