@@ -9,12 +9,10 @@ const { EMAIL_VERIFICATION_MINUTES_TO_EXPIRE } = require("../constants");
 const { EntityPermissions } = require("../db/models/entityPermissions");
 const { UserEntityAccess } = require("../db/models/userEntityAccess");
 const { BCRYPT_SALT_ROUNDS } = require("../config/app.config");
-const { getWelcomeEmailBody } = require("../utils/emails");
 const { Warehouses } = require("../db/models/warehouses");
 const { Companies } = require("../db/models/companies");
 const { sequelize } = require("../db/connection");
 const { Users } = require("../db/models/users");
-const { resend } = require("../utils/resend");
 
 const login = async (req, res, next) => {
   try {
