@@ -67,6 +67,7 @@ const signUp = async (req, res, next) => {
       where: {
         email: newUserData.email,
       },
+      transaction: t,
     });
 
     if (userWithSameEmail) {
@@ -82,6 +83,7 @@ const signUp = async (req, res, next) => {
       where: {
         username: newUserData.username,
       },
+      transaction: t,
     });
 
     if (userWithSameUsername) {
