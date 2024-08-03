@@ -26,6 +26,36 @@ const Companies = sequelize.define(
         notEmpty: true,
       },
     },
+    countryCode: {
+      type: DataTypes.STRING(3),
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    countryName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    stateCode: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    stateName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    cityCode: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    cityName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     paranoid: true,

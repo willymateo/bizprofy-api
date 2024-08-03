@@ -17,6 +17,30 @@ module.exports = {
           defaultValue: "",
           allowNull: false,
         },
+        countryCode: {
+          type: Sequelize.STRING(3),
+          allowNull: false,
+        },
+        countryName: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        stateCode: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
+        stateName: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
+        cityCode: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
+        cityName: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
         createdAt: {
           field: "created_at",
           type: Sequelize.DATE,

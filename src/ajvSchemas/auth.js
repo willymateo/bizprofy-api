@@ -21,9 +21,36 @@ const loginSchema = {
 const signUpSchema = {
   additionalProperties: false,
   type: "object",
-  required: ["companyName", "username", "password", "firstNames", "lastNames", "email"],
+  required: [
+    "companyName",
+    "countryCode",
+    "countryName",
+    "firstNames",
+    "lastNames",
+    "username",
+    "password",
+    "email",
+  ],
   properties: {
     companyName: {
+      type: "string",
+    },
+    countryCode: {
+      type: "string",
+    },
+    countryName: {
+      type: "string",
+    },
+    stateCode: {
+      type: "string",
+    },
+    stateName: {
+      type: "string",
+    },
+    cityCode: {
+      type: "string",
+    },
+    cityName: {
       type: "string",
     },
     username: {
