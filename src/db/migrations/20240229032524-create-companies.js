@@ -17,27 +17,23 @@ module.exports = {
           defaultValue: "",
           allowNull: false,
         },
-        countryCode: {
+        country_code: {
           type: Sequelize.STRING(3),
           allowNull: false,
         },
-        countryName: {
+        country_name: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        stateCode: {
+        country_state_code: {
           type: Sequelize.STRING,
           allowNull: true,
         },
-        stateName: {
+        country_state_name: {
           type: Sequelize.STRING,
           allowNull: true,
         },
-        cityCode: {
-          type: Sequelize.STRING,
-          allowNull: true,
-        },
-        cityName: {
+        city_name: {
           type: Sequelize.STRING,
           allowNull: true,
         },

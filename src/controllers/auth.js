@@ -62,13 +62,12 @@ const signUp = async (req, res, next) => {
 
   try {
     const {
-      companyName = "",
+      companyCountryStateCode = "",
+      companyCountryStateName = "",
       companyCountryCode = "",
       companyCountryName = "",
-      companyStateCode = "",
-      companyStateName = "",
-      companyCityCode = "",
       companyCityName = "",
+      companyName = "",
       password = "",
       ...newUserData
     } = req.body;
@@ -108,11 +107,11 @@ const signUp = async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
     const newCompanyInstance = Companies.build({
+      countryStateCode: companyCountryStateCode || null,
+      countryStateName: companyCountryStateName || null,
+      cityName: companyCityName || null,
       countryCode: companyCountryCode,
       countryName: companyCountryName,
-      stateCode: companyStateCode,
-      stateName: companyStateName,
-      cityCode: companyCityCode,
       name: companyName,
     });
     const newDefaultWarehouseInstance = Warehouses.build({

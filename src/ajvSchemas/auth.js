@@ -22,9 +22,9 @@ const signUpSchema = {
   additionalProperties: false,
   type: "object",
   required: [
+    "companyCountryCode",
+    "companyCountryName",
     "companyName",
-    "countryCode",
-    "countryName",
     "firstNames",
     "lastNames",
     "username",
@@ -35,22 +35,19 @@ const signUpSchema = {
     companyName: {
       type: "string",
     },
-    countryCode: {
+    companyCountryCode: {
       type: "string",
     },
-    countryName: {
+    companyCountryName: {
       type: "string",
     },
-    stateCode: {
+    companyCountryStateCode: {
       type: "string",
     },
-    stateName: {
+    companyCountryStateName: {
       type: "string",
     },
-    cityCode: {
-      type: "string",
-    },
-    cityName: {
+    companyCityName: {
       type: "string",
     },
     username: {

@@ -40,15 +40,11 @@ const Companies = sequelize.define(
         notEmpty: true,
       },
     },
-    stateCode: {
+    countryStateCode: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    stateName: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    cityCode: {
+    countryStateName: {
       type: DataTypes.STRING,
       allowNull: true,
     },
