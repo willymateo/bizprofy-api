@@ -11,6 +11,7 @@ const { notFound, errorHandler } = require("./middlewares/error");
 const warehousesRouter = require("./routes/warehouses");
 const customersRouter = require("./routes/customers");
 const providersRouter = require("./routes/providers");
+const countriesRouter = require("./routes/countries");
 const productsRouter = require("./routes/products");
 const stockRouter = require("./routes/stock");
 const usersRouter = require("./routes/users");
@@ -41,6 +42,7 @@ app.get("/", (req, res) => {
 });
 app.use("/warehouses", warehousesRouter);
 app.use("/customers", customersRouter);
+app.use("/countries", countriesRouter);
 app.use("/providers", providersRouter);
 app.use("/products", productsRouter);
 app.use("/stock", stockRouter);

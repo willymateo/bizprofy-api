@@ -61,7 +61,16 @@ const signUp = async (req, res, next) => {
   const t = await sequelize.transaction();
 
   try {
-    const { password = "", companyName = "", ...newUserData } = req.body;
+    const {
+      companyCountryStateCode = "",
+      companyCountryStateName = "",
+      companyCountryCode = "",
+      companyCountryName = "",
+      companyCityName = "",
+      companyName = "",
+      password = "",
+      ...newUserData
+    } = req.body;
 
     const userWithSameEmail = await Users.findOne({
       where: {
@@ -97,7 +106,14 @@ const signUp = async (req, res, next) => {
 
     const passwordHash = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
-    const newCompanyInstance = Companies.build({ name: companyName });
+    const newCompanyInstance = Companies.build({
+      countryStateCode: companyCountryStateCode || null,
+      countryStateName: companyCountryStateName || null,
+      cityName: companyCityName || null,
+      countryCode: companyCountryCode,
+      countryName: companyCountryName,
+      name: companyName,
+    });
     const newDefaultWarehouseInstance = Warehouses.build({
       companyId: newCompanyInstance.id,
       code: "MAIN",
